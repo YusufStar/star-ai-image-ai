@@ -22,25 +22,49 @@ import {
 import { Icon } from "@iconify/react";
 import { useEffect } from "react";
 
-const formSchema = z.object({
+import useGeneratedStore from "@/store/useGeneratedStore";
+
+const baseSchema = {
     prompt: z.string().min(1, "Prompt is required"),
-    image: z.string().url().optional(),
     aspect_ratio: z.enum(["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3", "9:16", "9:21"]),
     prompt_strength: z.number().min(0).max(1),
     num_outputs: z.number().int().min(1).max(4),
-    num_inference_steps: z.number().int().min(1).max(50),
+    num_inference_steps: z.number().int().superRefine((val, ctx) => {
+        const model = (ctx as any).data?.model;
+
+        if (model === "black-forest-labs/flux-schnell" && val > 4) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Maximum 4 steps for Flux Schnell model",
+                path: ["num_inference_steps"]
+            });
+        } else if (model === "black-forest-labs/flux-dev") {
+            if (val < 1 || val > 50) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Steps must be between 1 and 50 for Flux Dev model",
+                    path: ["num_inference_steps"]
+                });
+            }
+        }
+    }),
     guidance: z.number().min(0).max(10),
-    seed: z.number().int().optional(),
     output_format: z.enum(["webp", "jpg", "png"]),
     output_quality: z.number().int().min(0).max(100),
     disable_safety_checker: z.boolean(),
     go_fast: z.boolean(),
     megapixels: z.enum(["1", "0.25"])
+};
+
+export const ImageGenerationFormSchema = z.object({
+    model: z.enum(["black-forest-labs/flux-dev", "black-forest-labs/flux-schnell"]),
+    ...baseSchema
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof ImageGenerationFormSchema>;
 
 const defaultValues: FormValues = {
+    model: "black-forest-labs/flux-dev",
     prompt: "",
     aspect_ratio: "1:1",
     prompt_strength: 0.8,
@@ -55,14 +79,13 @@ const defaultValues: FormValues = {
 };
 
 const tooltipContent = {
+    model: "Select the AI model to use for image generation. Different models may produce different styles and qualities.",
     prompt: "Write a detailed description of the image you want to generate. Be specific about style, mood, colors, and composition.",
-    image: "Provide a URL to an existing image to use as a starting point. The AI will use this as reference while maintaining your prompt's style.",
     aspect_ratio: "Choose the width-to-height ratio of your generated image. Different ratios are better suited for different purposes (e.g., 16:9 for landscapes).",
     prompt_strength: "Controls how closely the AI follows your prompt. Higher values (closer to 1) mean stricter adherence to the prompt.",
     guidance: "Determines how much the AI should prioritize following your prompt vs being creative. Higher values = more prompt-focused.",
     num_outputs: "Number of different variations to generate at once. More outputs = longer generation time.",
     num_inference_steps: "Number of steps in the generation process. More steps = higher quality but longer generation time.",
-    seed: "A number that determines the random starting point. Using the same seed with the same settings will generate the same image.",
     output_format: "File format for the generated images. WebP offers best compression, PNG best quality, JPG good balance.",
     output_quality: "Compression quality for the output image. Higher values mean better quality but larger file size.",
     disable_safety_checker: "Disable content filtering. Warning: May generate NSFW or inappropriate content.",
@@ -91,25 +114,44 @@ const InfoTooltip = ({ content }: { content: string }) => (
 );
 
 const ConfigurationsForm = () => {
+    const generateImage = useGeneratedStore((state) => state.generateImage);
+    const loading = useGeneratedStore((state) => state.loading);
+
     const {
         register,
         handleSubmit,
         formState: { errors },
         watch,
         setValue,
-        reset
+        reset,
+        trigger
     } = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
-        defaultValues
+        resolver: zodResolver(ImageGenerationFormSchema),
+        defaultValues,
+        mode: "onChange"
     });
 
-    const onSubmit = (data: FormValues) => {
-        console.log(data);
-        // Handle form submission
+    const selectedModel = watch("model");
+    const inferenceSteps = watch("num_inference_steps");
+
+    useEffect(() => {
+        if (selectedModel === "black-forest-labs/flux-schnell") {
+            // For flux-schnell, always set to 4 steps
+            setValue("num_inference_steps", 4);
+            trigger("num_inference_steps");
+        } else if (selectedModel === "black-forest-labs/flux-dev") {
+            // When switching to flux-dev, always set to default 28
+            setValue("num_inference_steps", 28);
+            trigger("num_inference_steps");
+        }
+    }, [selectedModel, setValue, trigger]);
+
+    const onSubmit = async (values: FormValues) => {
+        await generateImage(values);
     };
 
     const handleReset = () => {
-        reset(defaultValues); // Reset form to default values
+        reset(defaultValues);
     };
 
     // Set default values when component mounts
@@ -126,30 +168,32 @@ const ConfigurationsForm = () => {
                 <CardBody className="space-y-3 py-2">
                     <div>
                         <div className="flex items-center gap-1 mb-1">
+                            <span className="text-sm font-medium">Model</span>
+                            <InfoTooltip content={tooltipContent.model} />
+                        </div>
+                        <Select
+                            defaultSelectedKeys={["black-forest-labs/flux-dev"]}
+                            isDisabled={loading}
+                            placeholder="Select model"
+                            onChange={(e) => setValue("model", e.target.value as any)}
+                        >
+                            <SelectItem key="black-forest-labs/flux-dev">Flux Dev</SelectItem>
+                            <SelectItem key="black-forest-labs/flux-schnell">Flux Schnell</SelectItem>
+                        </Select>
+                    </div>
+
+                    <div>
+                        <div className="flex items-center gap-1 mb-1">
                             <span className="text-sm font-medium">Prompt</span>
                             <InfoTooltip content={tooltipContent.prompt} />
                         </div>
                         <Textarea
                             description="Prompt for generated image"
                             errorMessage={errors.prompt?.message}
+                            isDisabled={loading}
                             isInvalid={!!errors.prompt}
                             placeholder="Enter your image prompt"
                             {...register("prompt")}
-                        />
-                    </div>
-
-                    <div>
-                        <div className="flex items-center gap-1 mb-1">
-                            <span className="text-sm font-medium">Image URL</span>
-                            <InfoTooltip content={tooltipContent.image} />
-                        </div>
-                        <Input
-                            description="Input image for image to image mode"
-                            errorMessage={errors.image?.message}
-                            isInvalid={!!errors.image}
-                            placeholder="https://example.com/image.jpg"
-                            type="url"
-                            {...register("image")}
                         />
                     </div>
 
@@ -160,6 +204,7 @@ const ConfigurationsForm = () => {
                         </div>
                         <Select
                             defaultSelectedKeys={["1:1"]}
+                            isDisabled={loading}
                             placeholder="Select aspect ratio"
                             onChange={(e) => setValue("aspect_ratio", e.target.value as any)}
                         >
@@ -169,6 +214,21 @@ const ConfigurationsForm = () => {
                                 </SelectItem>
                             ))}
                         </Select>
+                    </div>
+
+                    <div>
+                        <div className="flex items-center gap-1 mb-1">
+                            <span className="text-sm font-medium">Output Quality</span>
+                            <InfoTooltip content={tooltipContent.output_quality} />
+                        </div>
+                        <Input
+                            description="Quality of output images (0-100)"
+                            isDisabled={loading}
+                            max={100}
+                            min={0}
+                            type="number"
+                            {...register("output_quality", { valueAsNumber: true })}
+                        />
                     </div>
                 </CardBody>
             </Card>
@@ -187,6 +247,7 @@ const ConfigurationsForm = () => {
                             <Slider
                                 className="w-full"
                                 defaultValue={0.8}
+                                isDisabled={loading}
                                 maxValue={1}
                                 minValue={0}
                                 size="sm"
@@ -203,6 +264,7 @@ const ConfigurationsForm = () => {
                             <Slider
                                 className="w-full"
                                 defaultValue={3}
+                                isDisabled={loading}
                                 maxValue={10}
                                 minValue={0}
                                 size="sm"
@@ -220,6 +282,7 @@ const ConfigurationsForm = () => {
                             </div>
                             <Input
                                 description="Number of images to generate (1-4)"
+                                isDisabled={loading}
                                 max={4}
                                 min={1}
                                 type="number"
@@ -233,23 +296,15 @@ const ConfigurationsForm = () => {
                                 <InfoTooltip content={tooltipContent.num_inference_steps} />
                             </div>
                             <Input
-                                description="Number of denoising steps (1-50)"
-                                max={50}
+                                description={`Number of denoising steps (${selectedModel === "black-forest-labs/flux-schnell" ? "max 4" : "1-50"})`}
+                                errorMessage={errors.num_inference_steps?.message}
+                                isDisabled={loading}
+                                isInvalid={!!errors.num_inference_steps}
+                                max={selectedModel === "black-forest-labs/flux-schnell" ? 4 : 50}
                                 min={1}
                                 type="number"
-                                {...register("num_inference_steps", { valueAsNumber: true })}
-                            />
-                        </div>
-
-                        <div>
-                            <div className="flex items-center gap-1 mb-1">
-                                <span className="text-sm font-medium">Seed</span>
-                                <InfoTooltip content={tooltipContent.seed} />
-                            </div>
-                            <Input
-                                description="Random seed for reproducible generation"
-                                type="number"
-                                {...register("seed", { valueAsNumber: true })}
+                                value={inferenceSteps?.toString()}
+                                onChange={(e) => setValue("num_inference_steps", parseInt(e.target.value))}
                             />
                         </div>
 
@@ -260,6 +315,7 @@ const ConfigurationsForm = () => {
                             </div>
                             <Select
                                 defaultSelectedKeys={["webp"]}
+                                isDisabled={loading}
                                 placeholder="Select format"
                                 onChange={(e) => setValue("output_format", e.target.value as any)}
                             >
@@ -278,6 +334,7 @@ const ConfigurationsForm = () => {
                             </div>
                             <Select
                                 defaultSelectedKeys={["1"]}
+                                isDisabled={loading}
                                 placeholder="Select megapixels"
                                 onChange={(e) => setValue("megapixels", e.target.value as any)}
                             >
@@ -285,26 +342,13 @@ const ConfigurationsForm = () => {
                                 <SelectItem key="0.25">0.25 MP</SelectItem>
                             </Select>
                         </div>
-
-                        <div>
-                            <div className="flex items-center gap-1 mb-1">
-                                <span className="text-sm font-medium">Output Quality</span>
-                                <InfoTooltip content={tooltipContent.output_quality} />
-                            </div>
-                            <Input
-                                description="Quality of output images (0-100)"
-                                max={100}
-                                min={0}
-                                type="number"
-                                {...register("output_quality", { valueAsNumber: true })}
-                            />
-                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="flex items-center gap-2">
                             <Switch
                                 defaultSelected={true}
+                                isDisabled={loading}
                                 size="sm"
                                 {...register("go_fast")}
                             >
@@ -316,6 +360,7 @@ const ConfigurationsForm = () => {
                         <div className="flex items-center gap-2">
                             <Switch
                                 defaultSelected={false}
+                                isDisabled={loading}
                                 size="sm"
                                 {...register("disable_safety_checker")}
                             >
@@ -330,6 +375,7 @@ const ConfigurationsForm = () => {
                     <Button
                         className="w-full order-2 sm:order-1"
                         color="danger"
+                        isDisabled={loading}
                         size="sm"
                         type="button"
                         variant="flat"
@@ -337,10 +383,11 @@ const ConfigurationsForm = () => {
                     >
                         Reset
                     </Button>
-                    <Button 
-                        className="w-full order-1 sm:order-2" 
+                    <Button
+                        className="w-full order-1 sm:order-2"
                         color="primary"
-                        size="sm" 
+                        isLoading={loading}
+                        size="sm"
                         type="submit"
                     >
                         Generate Image

@@ -5,7 +5,7 @@ const GenerateImage = () => {
     return (
         <div className="h-full w-full">
             <section className="w-full h-full items-start [@media(min-width:2048px)]:items-center overflow-y-auto flex flex-col xl:flex-row gap-4">
-                <div className="w-full">
+                <div className="w-4/5">
                     <ConfigurationsForm />
                 </div>
 

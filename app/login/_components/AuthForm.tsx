@@ -243,9 +243,6 @@ export default function AuthForm() {
     event.preventDefault();
     const emailError = getEmailError(forgotPasswordForm.email);
 
-    if (!emailError) {
-      console.log("Forgot Password Form Data:", forgotPasswordForm);
-    }
   };
 
   const formVariants = {
@@ -261,9 +258,17 @@ export default function AuthForm() {
           <motion.div
             key="login"
             animate="animate"
-            className="flex w-full max-w-sm flex-col items-center gap-4 p-4"
             exit="exit"
             initial="initial"
+            style={{
+              display: "flex",
+              width: "100%",
+              maxWidth: "24rem",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "1rem",
+              padding: "1rem"
+            }}
             transition={{ duration: 0.3 }}
             variants={formVariants}
           >
@@ -286,9 +291,17 @@ export default function AuthForm() {
           <motion.div
             key="register"
             animate="animate"
-            className="flex w-full max-w-sm flex-col items-center gap-4 p-4"
             exit="exit"
             initial="initial"
+            style={{
+              display: "flex",
+              width: "100%",
+              maxWidth: "24rem",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "1rem",
+              padding: "1rem"
+            }}
             transition={{ duration: 0.3 }}
             variants={formVariants}
           >
@@ -317,9 +330,17 @@ export default function AuthForm() {
           <motion.div
             key="forgot-password"
             animate="animate"
-            className="flex w-full max-w-sm flex-col items-center gap-4 p-4"
             exit="exit"
             initial="initial"
+            style={{
+              display: "flex",
+              width: "100%",
+              maxWidth: "24rem",
+              flexDirection: "column", 
+              alignItems: "center",
+              gap: "1rem",
+              padding: "1rem"
+            }}
             transition={{ duration: 0.3 }}
             variants={formVariants}
           >

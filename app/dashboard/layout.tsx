@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode, useEffect, useState } from "react";
-import { Avatar, Button, ScrollShadow, Spacer, Tooltip, Skeleton } from "@heroui/react";
+import { Avatar, Button, ScrollShadow, Spacer, Tooltip, Skeleton, addToast } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@heroui/react";
@@ -65,7 +65,7 @@ export default function Component({ children }: { children: ReactNode[] }) {
         try {
             setIsLoadingUserData(true);
             const { data: { user }, error } = await getUser();
-            
+
             if (error) {
                 return;
             }
@@ -77,7 +77,11 @@ export default function Component({ children }: { children: ReactNode[] }) {
                 });
             }
         } catch (error) {
-            console.error('Error in getUserData:', error);
+            addToast({
+                title: "Fetching user data error!",
+                description: String(error),
+                color: "danger"
+            })
         } finally {
             setIsLoadingUserData(false);
         }
@@ -195,7 +199,7 @@ export default function Component({ children }: { children: ReactNode[] }) {
                     </Tooltip>
                     <Tooltip content="Log Out" isDisabled={!isCompact} placement="right">
                         <Button
-                        className={cn("justify-start text-default-500 data-[hover=true]:text-foreground", {
+                            className={cn("justify-start text-default-500 data-[hover=true]:text-foreground", {
                                 "justify-center": isCompact,
                             })}
                             isIconOnly={isCompact}
