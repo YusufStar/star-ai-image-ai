@@ -26,7 +26,7 @@ import useGeneratedStore from "@/store/useGeneratedStore";
 
 const baseSchema = {
     prompt: z.string().min(1, "Prompt is required"),
-    aspect_ratio: z.enum(["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3", "9:16", "9:21"]),
+    aspect_ratio: z.enum(["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3"]),
     prompt_strength: z.number().min(0).max(1),
     num_outputs: z.number().int().min(1).max(4),
     num_inference_steps: z.number().int().superRefine((val, ctx) => {
@@ -208,7 +208,7 @@ const ConfigurationsForm = () => {
                             placeholder="Select aspect ratio"
                             onChange={(e) => setValue("aspect_ratio", e.target.value as any)}
                         >
-                            {["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3", "9:16", "9:21"].map((ratio) => (
+                            {["1:1", "16:9", "21:9", "3:2", "2:3", "4:5", "5:4", "3:4", "4:3"].map((ratio) => (
                                 <SelectItem key={ratio}>
                                     {ratio}
                                 </SelectItem>

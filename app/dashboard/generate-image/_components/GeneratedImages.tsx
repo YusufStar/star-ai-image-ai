@@ -127,7 +127,10 @@ function GeneratedImages() {
                 >
                     <div className="relative group flex items-center">
                         <Card className='w-full'>
-                            <CardBody className='aspect-square flex flex-col items-center justify-center p-8 gap-4'>
+                            <CardBody
+                                className='relative flex flex-col items-center justify-center p-8 gap-4'
+                                style={{ aspectRatio: '1 / 1' }}
+                            >
                                 <motion.div
                                     animate={{ scale: 1 }}
                                     initial={{ scale: 0.8 }}
@@ -171,7 +174,10 @@ function GeneratedImages() {
                 >
                     <div className="relative group flex items-center">
                         <Card className='w-full'>
-                            <CardBody className='aspect-square flex flex-col items-center justify-center p-8 gap-4'>
+                            <CardBody
+                                className='relative flex flex-col items-center justify-center p-8 gap-4'
+                                style={{ aspectRatio: '1 / 1' }}
+                            >
                                 <motion.div
                                     animate={{ scale: 1 }}
                                     initial={{ scale: 0.8 }}
@@ -225,9 +231,18 @@ function GeneratedImages() {
                     <div ref={emblaRef} className="overflow-hidden flex-1">
                         <div className="flex touch-pan-y select-none">
                             {images.map((image, index) => (
-                                <div key={index} className="flex-[0_0_100%] min-w-0 relative">
+                                <div
+                                    key={index}
+                                    className="flex-[0_0_100%] min-w-0 relative"
+                                >
                                     <Card className="w-full group/card">
-                                        <CardBody className="relative aspect-square">
+                                        <CardBody
+                                            className="relative p-0"
+                                            style={{
+                                                aspectRatio: image.width && image.height ? `${image.width} / ${image.height}` : '1 / 1',
+                                                transition: 'all 0.3s ease'
+                                            }}
+                                        >
                                             {!loadedImages[image.url] && (
                                                 <div className="absolute inset-0 z-10">
                                                     <Skeleton className="w-full h-full rounded-lg animate-pulse" />

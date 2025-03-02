@@ -6,7 +6,7 @@ import { ImageGenerationFormSchema } from "@/app/dashboard/generate-image/_compo
 
 interface GenerateState {
     loading: boolean;
-    images: Array<{ url: string, alt: string; }>
+    images: Array<{ url: string, alt: string; width: number; height: number; }>
     error: string | null;
     generateImage: (values: z.infer<typeof ImageGenerationFormSchema>) => Promise<void>
 }
@@ -17,7 +17,7 @@ const useGeneratedStore = create<GenerateState>((set) => ({
     error: null,
 
     generateImage: async (values: z.infer<typeof ImageGenerationFormSchema>) => {
-        set({ loading: true, error: null })
+        set({ loading: true, error: null, images: [] })
 
         try {
             const { error, data, success } = await generateImage(values)
@@ -28,12 +28,18 @@ const useGeneratedStore = create<GenerateState>((set) => ({
                 return
             }
 
-            const dataWithUrl = data.map((url: string) => {
+            const dataWithUrl = data.map(({ url, height, width }: {
+                url: string;
+                width: number;
+                height: number;
+            }) => {
                 return {
                     url,
+                    width,
+                    height,
                     alt: "Generated Image",
                     ...values
-                } 
+                }
             })
 
             set({ images: dataWithUrl, loading: false })

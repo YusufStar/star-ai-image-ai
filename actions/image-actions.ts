@@ -28,10 +28,24 @@ export async function generateImage(input: z.infer<typeof ImageGenerationFormSch
     try {
         const output = await replicate.run(input.model as `${string}/${string}`, { input: input })
 
+        // Process each output item to add width and height
+        const processedOutput = await Promise.all(
+            (output as string[]).map(async (url) => {
+                const arrayBuffer = await imgUrlToBlog(url)
+                const { width, height } = imageMeta(new Uint8Array(arrayBuffer))
+
+                return {
+                    url,
+                    width,
+                    height
+                }
+            })
+        )
+
         return {
             error: null,
             success: true,
-            data: output
+            data: processedOutput
         };
     } catch (error: any) {
         return {
@@ -127,5 +141,99 @@ export async function storeImages(data: storeImageInput[]) {
             success: true,
             data: { results: uploadResults }
         }
+    }
+}
+
+export async function getImages(limit?: number) {
+    const supabase = await createClient()
+
+    const { data: { user } } = await getUser()
+
+    if (!user) {
+        return {
+            error: "Unauthorized",
+            success: false,
+            data: null
+        }
+    }
+
+    let query = supabase.from("generated_images").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
+
+    if (limit) {
+        query = query.limit(limit)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+        return {
+            error: error.message || "Failed to fetch images!",
+            success: false,
+            data: null
+        }
+    }
+
+    const imagesWithUrls = await Promise.all(
+        data.map(async (image: Database["public"]["Tables"]["generated_images"]["Row"]) => {
+            const { data } = await supabase.storage.from("generated_images").createSignedUrl(`${user.id}/${image.image_name}`, 3600)
+
+            return {
+                ...image,
+                url: data?.signedUrl
+            }
+        })
+    )
+
+    return {
+        error: null,
+        success: true,
+        data: imagesWithUrls
+    }
+}
+
+export async function deleteImage(imageId: number, imageName: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await getUser()
+
+    if (!user) {
+        return {
+            error: "Unauthorized",
+            success: false,
+            data: null
+        }
+    }
+
+    // First, delete the image from storage
+    const { error: storageError } = await supabase.storage
+        .from("generated_images")
+        .remove([`${user.id}/${imageName}`])
+
+    if (storageError) {
+        return {
+            error: `Failed to delete image from storage: ${storageError.message}`,
+            success: false,
+            data: null
+        }
+    }
+
+    // Then, delete the record from the database
+    const { error: dbError } = await supabase
+        .from("generated_images")
+        .delete()
+        .eq("id", imageId)
+        .eq("user_id", user.id)
+
+    if (dbError) {
+        return {
+            error: `Failed to delete image record: ${dbError.message}`,
+            success: false,
+            data: null
+        }
+    }
+
+    return {
+        error: null,
+        success: true,
+        data: null
     }
 }
