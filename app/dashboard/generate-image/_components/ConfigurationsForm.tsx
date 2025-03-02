@@ -15,7 +15,9 @@ import {
     CardBody,
     CardHeader,
     CardFooter,
-    Tooltip,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useEffect } from "react";
@@ -69,17 +71,23 @@ const tooltipContent = {
 };
 
 const InfoTooltip = ({ content }: { content: string }) => (
-    <Tooltip content={content} placement="right" className="max-w-xs">
-        <Button
-            isIconOnly
-            size="sm"
-            disabled
-            variant="light"
-            className="text-default-400 hover:text-default-500 -mb-1 !bg-transparent !hover:bg-transparent"
-        >
-            <Icon icon="solar:info-circle-line-duotone" width={18} />
-        </Button>
-    </Tooltip>
+    <Popover placement="top-start">
+        <PopoverTrigger>
+            <Button
+                isIconOnly
+                className="text-default-400 hover:text-default-500 !bg-transparent !hover:bg-transparent"
+                size="sm"
+                variant="light"
+            >
+                <Icon icon="solar:info-circle-line-duotone" width={18} />
+            </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+            <div className="px-1 py-2 max-w-md">
+                <p className="text-sm text-default-600">{content}</p>
+            </div>
+        </PopoverContent>
+    </Popover>
 );
 
 const ConfigurationsForm = () => {
@@ -110,12 +118,12 @@ const ConfigurationsForm = () => {
     }, [reset]);
 
     return (
-        <form className="space-y-6 p-4 justify-center flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-            <Card>
-                <CardHeader>
+        <form className="space-y-4 flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+            <Card className="p-4 bg-content1">
+                <CardHeader className="pb-4">
                     <h3 className="text-xl font-semibold">Basic Configuration</h3>
                 </CardHeader>
-                <CardBody className="space-y-4">
+                <CardBody className="space-y-3 py-2">
                     <div>
                         <div className="flex items-center gap-1 mb-1">
                             <span className="text-sm font-medium">Prompt</span>
@@ -165,44 +173,46 @@ const ConfigurationsForm = () => {
                 </CardBody>
             </Card>
 
-            <Card>
-                <CardHeader>
-                    <h3 className="text-xl font-semibold">Advanced Settings</h3>
+            <Card className="p-2">
+                <CardHeader className="pb-2">
+                    <h3 className="text-lg font-semibold">Advanced Settings</h3>
                 </CardHeader>
-                <CardBody className="space-y-4">
-                    <div>
-                        <div className="flex items-center gap-1 mb-1">
-                            <span className="text-sm">Prompt Strength: {watch("prompt_strength")}</span>
-                            <InfoTooltip content={tooltipContent.prompt_strength} />
+                <CardBody className="space-y-3 py-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <div className="flex items-center gap-1 mb-1">
+                                <span className="text-sm">Prompt Strength: {watch("prompt_strength")}</span>
+                                <InfoTooltip content={tooltipContent.prompt_strength} />
+                            </div>
+                            <Slider
+                                className="w-full"
+                                defaultValue={0.8}
+                                maxValue={1}
+                                minValue={0}
+                                size="sm"
+                                step={0.1}
+                                onChange={(value) => setValue("prompt_strength", value as number)}
+                            />
                         </div>
-                        <Slider
-                            className="max-w-md"
-                            defaultValue={0.8}
-                            maxValue={1}
-                            minValue={0}
-                            size="sm"
-                            step={0.1}
-                            onChange={(value) => setValue("prompt_strength", value as number)}
-                        />
+
+                        <div>
+                            <div className="flex items-center gap-1 mb-1">
+                                <span className="text-sm">Guidance: {watch("guidance")}</span>
+                                <InfoTooltip content={tooltipContent.guidance} />
+                            </div>
+                            <Slider
+                                className="w-full"
+                                defaultValue={3}
+                                maxValue={10}
+                                minValue={0}
+                                size="sm"
+                                step={0.5}
+                                onChange={(value) => setValue("guidance", value as number)}
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <div className="flex items-center gap-1 mb-1">
-                            <span className="text-sm">Guidance: {watch("guidance")}</span>
-                            <InfoTooltip content={tooltipContent.guidance} />
-                        </div>
-                        <Slider
-                            className="max-w-md"
-                            defaultValue={3}
-                            maxValue={10}
-                            minValue={0}
-                            size="sm"
-                            step={0.5}
-                            onChange={(value) => setValue("guidance", value as number)}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <div className="flex items-center gap-1 mb-1">
                                 <span className="text-sm font-medium">Number of Outputs</span>
@@ -291,10 +301,11 @@ const ConfigurationsForm = () => {
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="flex items-center gap-2">
                             <Switch
                                 defaultSelected={true}
+                                size="sm"
                                 {...register("go_fast")}
                             >
                                 Enable Fast Mode
@@ -305,6 +316,7 @@ const ConfigurationsForm = () => {
                         <div className="flex items-center gap-2">
                             <Switch
                                 defaultSelected={false}
+                                size="sm"
                                 {...register("disable_safety_checker")}
                             >
                                 Disable Safety Checker
@@ -314,17 +326,23 @@ const ConfigurationsForm = () => {
                     </div>
                 </CardBody>
 
-                <CardFooter className="gap-4">
+                <CardFooter className="flex-col sm:flex-row gap-2 pt-2">
                     <Button
-                        className="w-full"
+                        className="w-full order-2 sm:order-1"
                         color="danger"
+                        size="sm"
                         type="button"
                         variant="flat"
                         onPress={handleReset}
                     >
                         Reset
                     </Button>
-                    <Button className="w-full" color="primary" type="submit">
+                    <Button 
+                        className="w-full order-1 sm:order-2" 
+                        color="primary"
+                        size="sm" 
+                        type="submit"
+                    >
                         Generate Image
                     </Button>
                 </CardFooter>

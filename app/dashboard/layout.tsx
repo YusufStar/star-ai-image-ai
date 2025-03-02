@@ -88,10 +88,10 @@ export default function Component({ children }: { children: ReactNode[] }) {
     }, []);
 
     return (
-        <div className="flex h-screen w-full">
+        <div className="flex h-screen w-full overflow-hidden">
             <div
                 className={cn(
-                    "relative flex h-full w-72 flex-col !border-r-small border-divider p-6 transition-width",
+                    "relative h-full w-72 flex-none flex-col !border-r-small border-divider p-6 transition-width hidden sm:flex",
                     {
                         "w-16 items-center px-2 py-6": isCompact,
                     },
@@ -195,8 +195,7 @@ export default function Component({ children }: { children: ReactNode[] }) {
                     </Tooltip>
                     <Tooltip content="Log Out" isDisabled={!isCompact} placement="right">
                         <Button
-                        onPress={() => logout()}
-                            className={cn("justify-start text-default-500 data-[hover=true]:text-foreground", {
+                        className={cn("justify-start text-default-500 data-[hover=true]:text-foreground", {
                                 "justify-center": isCompact,
                             })}
                             isIconOnly={isCompact}
@@ -210,6 +209,7 @@ export default function Component({ children }: { children: ReactNode[] }) {
                                 )
                             }
                             variant="light"
+                            onPress={() => logout()}
                         >
                             {isCompact ? (
                                 <Icon
@@ -224,8 +224,8 @@ export default function Component({ children }: { children: ReactNode[] }) {
                     </Tooltip>
                 </div>
             </div>
-            <div className="w-full flex flex-col h-full p-4">
-                <header className="flex items-center gap-3 rounded-medium border-small border-divider p-4">
+            <div className="flex-1 flex flex-col min-h-0 w-full">
+                <header className="flex-none flex items-center gap-3 rounded-medium border-small border-divider p-4">
                     <Button isIconOnly size="sm" variant="light" onPress={onToggle}>
                         <Icon
                             className="text-default-500"
@@ -238,8 +238,8 @@ export default function Component({ children }: { children: ReactNode[] }) {
 
                     <ThemeSwitch className="ml-auto" />
                 </header>
-                <main className="pt-4 h-full w-full">
-                    <div className="flex h-full w-full flex-col gap-4 p-4 rounded-medium border-small border-divider">
+                <main className="flex-1 min-h-0 p-4">
+                    <div className="h-full w-full flex flex-col gap-4 rounded-medium border-small border-divider overflow-y-auto p-4">
                         {children}
                     </div>
                 </main>

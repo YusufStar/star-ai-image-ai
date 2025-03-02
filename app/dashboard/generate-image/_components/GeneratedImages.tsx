@@ -1,9 +1,9 @@
 "use client"
 
-import { Card, CardBody, Skeleton, Button } from '@heroui/react'
+import { Card, CardBody, Skeleton, Button, addToast } from '@heroui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import Image from 'next/image'
+import NextImage from 'next/image'
 import { Icon } from "@iconify/react"
 
 const images = [
@@ -24,6 +24,59 @@ const images = [
         alt: "Confident Woman in Urban Setting"
     },
 ]
+
+async function copyImageToClipboard(imageUrl: string) {
+    try {
+        // Fetch the image
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Convert to PNG using Canvas
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        return new Promise((resolve) => {
+            img.onload = async () => {
+                // Set canvas size to match image
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Draw image onto canvas
+                ctx?.drawImage(img, 0, 0);
+
+                // Convert to PNG blob
+                canvas.toBlob(async (pngBlob) => {
+                    if (pngBlob) {
+                        try {
+                            // Copy PNG to clipboard
+                            await navigator.clipboard.write([
+                                new ClipboardItem({
+                                    'image/png': pngBlob
+                                })
+                            ]);
+                            resolve(true);
+                        } catch (error) {
+                            console.error('PNG kopyalama hatası:', error);
+                            resolve(false);
+                        }
+                    } else {
+                        resolve(false);
+                    }
+                }, 'image/png');
+            };
+
+            img.onerror = () => resolve(false);
+            
+            // Create object URL from blob
+            img.src = URL.createObjectURL(blob);
+        });
+    } catch (error) {
+        console.error('Görsel dönüştürme hatası:', error);
+
+        return false;
+    }
+}
 
 function GeneratedImages() {
     const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -82,7 +135,7 @@ function GeneratedImages() {
             <div className="relative group flex items-center gap-2">
                 <Button
                     isIconOnly
-                    className="hover:scale-105 shrink-0 bg-content1"
+                    className="hover:scale-105 shrink-0 bg-content1 hidden sm:flex"
                     disabled={!canScrollPrev}
                     size="md"
                     variant="flat"
@@ -97,15 +150,87 @@ function GeneratedImages() {
                 <div ref={emblaRef} className="overflow-hidden flex-1">
                     <div className="flex touch-pan-y select-none">
                         {images.map((image, index) => (
-                            <div key={index} className="flex-[0_0_100%] min-w-0 relative pl-4">
-                                <Card className="w-full">
+                            <div key={index} className="flex-[0_0_100%] min-w-0 relative">
+                                <Card className="w-full group/card">
                                     <CardBody className="relative aspect-square">
                                         {!loadedImages[image.src] && (
                                             <div className="absolute inset-0 z-10">
                                                 <Skeleton className="w-full h-full rounded-lg animate-pulse" />
                                             </div>
                                         )}
-                                        <Image
+                                        <div className="absolute top-2 right-2 z-20 flex gap-2 opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                            <Button
+                                                isIconOnly
+                                                className="bg-content1/80 backdrop-blur-md"
+                                                size="sm"
+                                                variant="flat"
+                                                onPress={async () => {
+                                                    try {
+                                                        const success = await copyImageToClipboard(image.src);
+
+                                                        if (success) {
+                                                            addToast({
+                                                                title: "Başarılı!",
+                                                                description: "Görsel panoya kopyalandı.",
+                                                                color: "success"
+                                                            });
+                                                        } else {
+                                                            addToast({
+                                                                title: "Hata!",
+                                                                description: "Görsel kopyalanamadı. Tarayıcı izinlerini kontrol edin.",
+                                                                color: "danger"
+                                                            });
+                                                        }
+                                                    } catch (error) {
+                                                        addToast({
+                                                            title: "Hata!",
+                                                            description: "Görsel kopyalanırken bir hata oluştu.",
+                                                            color: "danger"
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                <Icon 
+                                                    className="w-4 h-4" 
+                                                    icon="solar:copy-linear"
+                                                />
+                                            </Button>
+                                            <Button
+                                                isIconOnly
+                                                className="bg-content1/80 backdrop-blur-md"
+                                                size="sm"
+                                                variant="flat"
+                                                onPress={() => {
+                                                    try {
+                                                        const link = document.createElement('a');
+
+                                                        link.href = image.src;
+                                                        link.download = image.alt.replace(/\s+/g, '-').toLowerCase() + '.jpg';
+                                                        document.body.appendChild(link);
+                                                        link.click();
+                                                        document.body.removeChild(link);
+                                                        
+                                                        addToast({
+                                                            title: "Başarılı!",
+                                                            description: "Görsel indiriliyor...",
+                                                            color: "success"
+                                                        });
+                                                    } catch (error) {
+                                                        addToast({
+                                                            title: "Hata!",
+                                                            description: "Görsel indirilirken bir hata oluştu.",
+                                                            color: "danger"
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                <Icon 
+                                                    className="w-4 h-4" 
+                                                    icon="solar:download-linear"
+                                                />
+                                            </Button>
+                                        </div>
+                                        <NextImage
                                             fill
                                             alt={image.alt}
                                             className={`object-cover rounded-lg transition-opacity duration-300 ${
@@ -127,7 +252,7 @@ function GeneratedImages() {
 
                 <Button
                     isIconOnly
-                    className="hover:scale-105 ml-4 shrink-0 bg-content1"
+                    className="hover:scale-105 shrink-0 bg-content1 hidden sm:flex"
                     disabled={!canScrollNext}
                     size="md"
                     variant="flat"
