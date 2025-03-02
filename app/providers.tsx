@@ -26,7 +26,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   return (
     <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps}>
+      <NextThemesProvider {...themeProps} >
         {children}
         <ToastProvider />
       </NextThemesProvider>

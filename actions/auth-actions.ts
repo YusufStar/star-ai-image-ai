@@ -1,7 +1,8 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+
+import { createClient } from "@/lib/supabase/server";
 
 interface AuthResponse {
     error: null | string;
@@ -53,4 +54,10 @@ export async function logout(): Promise<void> {
 
     await supabase.auth.signOut()
     redirect("/login?mode=login")
+}
+
+export async function getUser() {
+    const supabase = await createClient()
+
+    return supabase.auth.getUser()
 }

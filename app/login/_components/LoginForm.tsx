@@ -117,7 +117,7 @@ export default function LoginForm({
             Forgot password?
           </Link>
         </div>
-        <Button isLoading={loading} className="w-full" color="primary" type="submit">
+        <Button className="w-full" color="primary" isLoading={loading} type="submit">
           Log In
         </Button>
       </Form>
