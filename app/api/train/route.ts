@@ -9,6 +9,8 @@ const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN,
 })
 
+const WEBHOOK_URL = process.env.SITE_URL ?? "https://59d5-213-14-147-186.ngrok-free.app"
+
 export async function POST(req: NextRequest) {
     try {
         if (!process.env.REPLICATE_API_TOKEN) {
@@ -64,9 +66,22 @@ export async function POST(req: NextRequest) {
                     resolution: "1024",
                     input_images: fileData.signedUrl,
                     trigger_word: "ohwx",
-                }
+                },
+                webhook: `${WEBHOOK_URL}/api/webhooks/training`,
+                webhook_events_filter: ["completed"]
             }
         );
+
+        await supabaseAdmin.from("models").insert({
+            model_id: modelId,
+            user_id: user.id,
+            model_name: input.modelName,
+            gender: input.gender,
+            training_status: training.status,
+            trigger_word: "ohwx",
+            training_steps: 1200,
+            training_id: training.id
+        })
 
         return NextResponse.json({
             success: true,
