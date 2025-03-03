@@ -1,3 +1,5 @@
+import ModelTrainingForm from "./_components/ModelTrainingForm"
+
 import { PageHeader } from "@/components/header"
 
 const TrainModelPage = async () => {
@@ -7,6 +9,8 @@ const TrainModelPage = async () => {
                 subtitle="Upload your dataset and configure the training settings to create your own AI model." 
                 title="Train Your Model" 
             />
+
+            <ModelTrainingForm />
         </section>
     )
 }

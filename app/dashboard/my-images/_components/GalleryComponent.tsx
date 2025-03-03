@@ -5,12 +5,12 @@ import { useEffect, useState } from "react"
 import { Card, CardBody, Skeleton, Button } from "@heroui/react"
 import { Icon } from "@iconify/react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useMediaQuery } from "usehooks-ts"
 
 import GalleryDetailModal from "./GalleryDetailModal"
 
 import { Tables } from "@/database.type"
 import { getImages } from "@/actions/image-actions"
-import { useMediaQuery } from "usehooks-ts"
 import { cn } from "@/lib/utils"
 
 type ImageProps = {
@@ -79,7 +79,7 @@ const GalleryComponent = ({ images }: GalleryProps) => {
 
     return (
         <section className="mx-auto">
-            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 3xl:columns-5 gap-4">
                 <AnimatePresence>
                     {realImages.map((image) => {
                         return (

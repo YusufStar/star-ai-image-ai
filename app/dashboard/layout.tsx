@@ -249,7 +249,9 @@ export default function Component({ children }: { children: ReactNode[] }) {
                             />
                         </Button>
                     )}
-                    <Breadcrumb pathname={pathname} />
+                    {
+                        !isMobile && <Breadcrumb pathname={pathname} />
+                    }
 
                     <ThemeSwitch className="ml-auto" />
                 </header>

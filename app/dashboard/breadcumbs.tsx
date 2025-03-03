@@ -1,9 +1,9 @@
 import { Breadcrumbs, BreadcrumbItem } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
+import { useMediaQuery } from "usehooks-ts";
 
 import { sectionItems } from "@/components/sidebar/sidebar-items";
-import { useMediaQuery } from "usehooks-ts";
 
 // Breadcrumb verisini üret
 const generateBreadcrumbs = (pathname: string) => {
