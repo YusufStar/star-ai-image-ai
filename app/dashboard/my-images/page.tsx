@@ -3,7 +3,7 @@ import GalleryComponent from "./_components/GalleryComponent"
 import { getImages } from "@/actions/image-actions"
 import { PageHeader } from "@/components/header"
 
-const Gallery = async () => {
+const GalleryPage = async () => {
     const { data: images } = await getImages()
 
     return (
@@ -15,4 +15,4 @@ const Gallery = async () => {
     )
 }
 
-export default Gallery
+export default GalleryPage

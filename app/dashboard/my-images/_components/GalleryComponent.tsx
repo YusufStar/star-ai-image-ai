@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardBody, Skeleton, Button } from "@heroui/react"
 import { Icon } from "@iconify/react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -10,6 +10,8 @@ import GalleryDetailModal from "./GalleryDetailModal"
 
 import { Tables } from "@/database.type"
 import { getImages } from "@/actions/image-actions"
+import { useMediaQuery } from "usehooks-ts"
+import { cn } from "@/lib/utils"
 
 type ImageProps = {
     url: string | undefined,
@@ -23,6 +25,8 @@ const GalleryComponent = ({ images }: GalleryProps) => {
     const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({})
     const [selectedImage, setSelectedImage] = useState<ImageProps | null>(null)
     const [realImages, setRealImages] = useState<ImageProps[]>(images)
+    const [mounted, setMounted] = useState(false)
+    const isMobile = useMediaQuery("(max-width: 768px)");
 
     const handleImageLoad = (src: string | undefined) => {
         if (src) {
@@ -41,13 +45,15 @@ const GalleryComponent = ({ images }: GalleryProps) => {
         setSelectedImage(null)
     }
 
-    const calculateAspectRatio = (width: number, height: number) => {
-        return (height / width) * 100
-    }
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) return
 
     if (realImages.length === 0) {
         return (
-            <div className="container mx-auto py-16 flex flex-col items-center justify-center min-h-[400px] text-center px-4">
+            <div className="container mx-auto py-16 flex flex-col items-center justify-center min-h-[400px] text-center">
                 <div className="mb-6">
                     <Icon
                         className="w-32 h-32 text-foreground-400"
@@ -72,12 +78,10 @@ const GalleryComponent = ({ images }: GalleryProps) => {
     }
 
     return (
-        <section className="container mx-auto">
+        <section className="mx-auto">
             <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
                 <AnimatePresence>
                     {realImages.map((image) => {
-                        const aspectRatio = calculateAspectRatio(image.width!, image.height!)
-
                         return (
                             <motion.div
                                 key={image.id}
@@ -114,7 +118,10 @@ const GalleryComponent = ({ images }: GalleryProps) => {
                                             />
                                         </div>
                                         {loadedImages[image.url!] && (
-                                            <div className="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div className={cn(
+                                                "absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-t from-black/60 via-transparent to-transparent",
+                                                isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                            )}>
                                                 <div className="flex items-center gap-2 self-end">
                                                     <button
                                                         className="bg-black/50 backdrop-blur-sm rounded-full p-2 hover:bg-black/70 transition-colors"

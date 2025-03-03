@@ -119,9 +119,9 @@ const GalleryDetailModal = ({ image, isOpen, onClose, onDelete }: GalleryDetailM
                     <DrawerBody className="overflow-y-auto">
                         <div className="space-y-6 py-4">
                             {/* Image Preview */}
-                            <div 
+                            <div
                                 className="relative w-full rounded-lg overflow-hidden shadow-lg"
-                                style={{ 
+                                style={{
                                     aspectRatio: `${image.width} / ${image.height}`,
                                     maxHeight: "80vh"
                                 }}
@@ -155,7 +155,7 @@ const GalleryDetailModal = ({ image, isOpen, onClose, onDelete }: GalleryDetailM
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-content2 p-4 rounded-lg">
                                         <p className="text-sm text-foreground-500">Model</p>
-                                        <p className="font-medium text-sm truncate overflow-hidden">{image.model}</p>
+                                        <p className="font-medium text-sm">{image.model}</p>
                                     </div>
                                     <div className="bg-content2 p-4 rounded-lg">
                                         <p className="text-sm text-foreground-500">Created At</p>
@@ -233,7 +233,7 @@ const GalleryDetailModal = ({ image, isOpen, onClose, onDelete }: GalleryDetailM
                     <DrawerFooter>
                         <div className="flex justify-end gap-3">
                             <Button
-                                variant="light"
+                                variant="faded"
                                 onPress={onClose}
                             >
                                 Close

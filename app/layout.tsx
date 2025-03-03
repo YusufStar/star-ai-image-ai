@@ -6,6 +6,7 @@ import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: {
@@ -39,6 +40,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
+        <NextTopLoader />
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           {children}
         </Providers>

@@ -7,6 +7,8 @@ import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@heroui/react";
 import { usePathname } from "next/navigation";
 
+import { Breadcrumb } from "./breadcumbs";
+
 import { sectionItems } from "@/components/sidebar/sidebar-items";
 import Sidebar from "@/components/sidebar/sidebar";
 import { Logo } from "@/components/icons";
@@ -29,12 +31,10 @@ export default function Component({ children }: { children: ReactNode[] }) {
     const isMobile = useMediaQuery("(max-width: 768px)");
     const pathname = usePathname();
 
-    // Prevent hydration mismatch
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // Find active key based on current pathname
     const findActiveKey = () => {
         for (const section of sectionItems) {
             for (const item of section.items || []) {
@@ -229,21 +229,32 @@ export default function Component({ children }: { children: ReactNode[] }) {
                 </div>
             </div>
             <div className="flex-1 flex flex-col min-h-0 w-full p-4">
-                <header className="flex-none flex items-center gap-3 rounded-medium border-small border-divider p-4">
-                    <Button isIconOnly size="sm" variant="light" onPress={onToggle}>
-                        <Icon
-                            className="text-default-500"
-                            height={24}
-                            icon="solar:sidebar-minimalistic-outline"
-                            width={24}
-                        />
-                    </Button>
-                    <h2 className="text-medium font-medium text-default-700">Overview</h2>
+                <header className="container mx-auto !py-4 flex-none flex items-center gap-3 rounded-medium border-small border-divider">
+                    {isMobile ? (
+                        <Button isIconOnly size="sm" variant="light" onPress={onToggle}>
+                            <Icon
+                                className="text-default-500"
+                                height={24}
+                                icon="solar:hamburger-menu-broken"
+                                width={24}
+                            />
+                        </Button>
+                    ) : (
+                        <Button isIconOnly size="sm" variant="light" onPress={onToggle}>
+                            <Icon
+                                className="text-default-500"
+                                height={24}
+                                icon="solar:sidebar-minimalistic-outline"
+                                width={24}
+                            />
+                        </Button>
+                    )}
+                    <Breadcrumb pathname={pathname} />
 
                     <ThemeSwitch className="ml-auto" />
                 </header>
                 <main className="flex-1 min-h-0 pt-4">
-                    <div className="h-full w-full flex flex-col gap-4 rounded-medium border-small border-divider overflow-y-auto p-4">
+                    <div className="h-full w-full flex flex-col gap-4 rounded-medium border-small border-divider overflow-y-auto">
                         {children}
                     </div>
                 </main>

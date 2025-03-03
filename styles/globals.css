@@ -4,6 +4,7 @@
 
 /* Modern Scrollbar Styles */
 @layer utilities {
+
     /* Webkit browsers (Chrome, Safari, newer Edge) */
     .scrollbar-modern::-webkit-scrollbar {
         width: 6px;
@@ -33,6 +34,7 @@
 
 /* Global Scrollbar Override */
 * {
+
     /* For Webkit */
     &::-webkit-scrollbar {
         width: 6px;
@@ -99,4 +101,53 @@
 
 .scrollbar-hidden::-webkit-scrollbar {
     display: none;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .container {
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .container {
+        max-width: 1536px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .container {
+        max-width: 1920px;
+    }
+}
+
+@media (min-width: 2560px) {
+    .container {
+        max-width: 2560px;
+    }
 }
