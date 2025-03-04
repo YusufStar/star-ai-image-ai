@@ -31,7 +31,7 @@ const formSchema = z.object({
       required_error: "Model name is required!",
     })
     .min(3, "Model name must be at least 3 characters"),
-  gender: z.enum(["male", "female"], {
+  gender: z.enum(["man", "woman"], {
     required_error: "Please select a gender",
   }),
   zipFile: z
@@ -67,7 +67,7 @@ const ModelTrainingForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       modelName: "",
-      gender: "male",
+      gender: "man",
       zipFile: undefined,
     },
   });
@@ -212,8 +212,8 @@ const ModelTrainingForm = () => {
                   value={field.value}
                   onValueChange={field.onChange}
                 >
-                  <Radio value="male">Male</Radio>
-                  <Radio value="female">Female</Radio>
+                  <Radio value="man">man</Radio>
+                  <Radio value="woman">woman</Radio>
                 </RadioGroup>
               )}
             />
