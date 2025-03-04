@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteModel, fetchModels } from "@/actions/model-actions";
 import { NotFoundDataCard } from "@/components/not-found-data-card";
 import { Database } from "@/database.type";
 import {
@@ -16,10 +17,11 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  addToast,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { formatDistance } from "date-fns";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type ModelType = {
   error: string | null;
@@ -39,6 +41,52 @@ const ModelList = ({ initialData }: ModelsListProps) => {
   const [selectedModel, setSelectedModel] = useState<
     Database["public"]["Tables"]["models"]["Row"] | null
   >(null);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const refetchModels = async () => {
+    const { data, success, error } = await fetchModels();
+    if (success) {
+      setModels(data);
+    }
+    if (error) {
+      addToast({
+        title: "Error fetching models.",
+        description: error,
+        color: "danger",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const startPolling = () => {
+      // Clear any existing interval
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+
+      // Check if any model is in training state
+      const hasTrainingModel = models?.some(model => 
+        model.training_status === "starting" || model.training_status === "processing"
+      );
+
+      // Set interval based on training status (2s if training, 5s otherwise)
+      const intervalTime = hasTrainingModel ? 2000 : 5000;
+      
+      pollingIntervalRef.current = setInterval(() => {
+        refetchModels();
+      }, intervalTime);
+    };
+
+    // Start polling
+    startPolling();
+
+    // Cleanup on unmount
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [models]); // Re-run when models change
 
   if (models?.length === 0) {
     return (
@@ -60,16 +108,33 @@ const ModelList = ({ initialData }: ModelsListProps) => {
   const handleDeleteClick = (
     model: Database["public"]["Tables"]["models"]["Row"]
   ) => {
+    if (model.training_status === "succeeded") {
+      addToast({
+        title: "Model is still training, please wait for it to finish.",
+        description: "You can delete the model later.",
+        color: "danger",
+      });
+    }
     setSelectedModel(model);
     onOpen();
   };
 
-  const handleConfirmDelete = () => {
-    // Here you would implement the actual deletion logic
-    if (selectedModel && models) {
-      const updatedModels = models.filter((m) => m.id !== selectedModel.id);
-      setModels(updatedModels);
+  const handleConfirmDelete = async () => {
+    const { error, success } = await deleteModel(selectedModel?.id!);
+    if (success) {
+      addToast({
+        title: "Model deleted successfully.",
+        color: "success",
+      });
     }
+    if (error) {
+      addToast({
+        title: "Error deleting model.",
+        description: error,
+        color: "danger",
+      });
+    }
+    refetchModels();
     onClose();
   };
 
@@ -185,6 +250,10 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                     color="danger"
                     className="min-w-0 h-7 w-7 rounded-full"
                     onClick={() => handleDeleteClick(model)}
+                    isDisabled={
+                      !model.training_status ||
+                      ["starting", "processing"].includes(model.training_status)
+                    }
                   >
                     <Icon icon="mdi:trash-outline" className="text-sm" />
                   </Button>

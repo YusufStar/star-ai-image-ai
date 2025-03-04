@@ -38,3 +38,33 @@ export async function fetchModels() {
     count: count || 0,
   };
 }
+
+export async function deleteModel(modelId: number) {
+  const {
+    data: { user },
+  } = await getUser();
+
+  const { data: modelData, error: modelError } = await supabaseAdmin
+    .from("models")
+    .select("*")
+    .eq("id", modelId)
+    .eq("user_id", user?.id);
+
+  if (modelError) {
+    return {
+      error: modelError?.message || null,
+      success: !modelError,
+    };
+  }
+
+  const { error } = await supabaseAdmin
+    .from("models")
+    .delete()
+    .eq("id", modelId)
+    .eq("user_id", user?.id);
+
+  return {
+    error: error?.message || null,
+    success: !error,
+  };
+}

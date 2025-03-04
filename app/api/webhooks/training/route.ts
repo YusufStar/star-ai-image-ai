@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import crypto from "crypto";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { Resend } from "resend";
+import { EmailTemplate } from "@/components/email-templates/EmailTemplate";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
@@ -52,17 +56,47 @@ export async function POST(req: Request) {
     const userEmail = userData.user?.email ?? "";
     const username = userData.user?.user_metadata.full_name ?? "";
 
-    console.log("Webhook received for model: ", modelName);
-    console.log("User email: ", userEmail);
-    console.log("Username: ", username);
-    console.log("File name: ", fileName);
-
     if (body.status === "succeeded") {
-      // send a successful status email
-      // update the supabase models table
+      await resend.emails.send({
+        from: "Star AI <yyilidz518@gmail.com>",
+        to: [userEmail],
+        subject: "Model Training Completed",
+        react: await EmailTemplate({
+          userName: username,
+          message: "Your model has been trained successfully.",
+        }),
+      });
+
+      await supabaseAdmin
+        .from("models")
+        .update({
+          training_status: "succeeded",
+          training_time: body.metrics?.total_time ?? null,
+          version: body.output?.version.split(":") ?? null,
+        })
+        .eq("user_id", userId)
+        .eq("model_id", modelName);
     } else {
-        // handle the failed and the canceled status
+      await resend.emails.send({
+        from: "Star AI <yyilidz518@gmail.com>",
+        to: [userEmail],
+        subject: `Model Training ${body.status}`,
+        react: await EmailTemplate({
+          userName: username,
+          message: `Your model training has been ${body.status}.`,
+        }),
+      });
+
+      await supabaseAdmin
+        .from("models")
+        .update({
+          training_status: body.status,
+        })
+        .eq("user_id", userId)
+        .eq("model_id", modelName);
     }
+
+    await supabaseAdmin.storage.from("training_data").remove([`${fileName}`]);
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
