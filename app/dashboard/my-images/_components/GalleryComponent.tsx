@@ -53,7 +53,7 @@ const GalleryComponent = ({ images }: GalleryProps) => {
 
     if (realImages.length === 0) {
         return (
-            <div className="container mx-auto py-16 flex flex-col items-center justify-center min-h-[400px] text-center">
+            <div className="custom-container mx-auto py-16 flex flex-col items-center justify-center min-h-[400px] text-center">
                 <div className="mb-6">
                     <Icon
                         className="w-32 h-32 text-foreground-400"

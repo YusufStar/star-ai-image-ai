@@ -11,6 +11,7 @@ import { Breadcrumb } from "./breadcumbs";
 
 import { sectionItems } from "@/components/sidebar/sidebar-items";
 import Sidebar from "@/components/sidebar/sidebar";
+import MobileSidebar from "@/components/sidebar/mobile-sidebar";
 import { Logo } from "@/components/icons";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { getUser, logout } from "@/actions/auth-actions";
@@ -22,6 +23,7 @@ interface UserData {
 
 export default function Component({ children }: { children: ReactNode[] }) {
     const [isCollapsed, setIsCollapsed] = React.useState(false);
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
     const [isLoadingUserData, setIsLoadingUserData] = useState(true);
     const [mounted, setMounted] = useState(false);
     const [userData, setUserData] = useState<UserData>({
@@ -58,8 +60,12 @@ export default function Component({ children }: { children: ReactNode[] }) {
     const isCompact = mounted ? (isCollapsed || isMobile) : false;
 
     const onToggle = React.useCallback(() => {
-        setIsCollapsed((prev) => !prev);
-    }, []);
+        if (isMobile) {
+            setIsMobileSidebarOpen(prev => !prev);
+        } else {
+            setIsCollapsed((prev) => !prev);
+        }
+    }, [isMobile]);
 
     const getUserData = async () => {
         try {
@@ -93,6 +99,16 @@ export default function Component({ children }: { children: ReactNode[] }) {
 
     return (
         <div className="flex h-screen w-full overflow-hidden">
+            {/* Mobile Sidebar */}
+            <MobileSidebar 
+                isOpen={isMobileSidebarOpen}
+                onClose={() => setIsMobileSidebarOpen(false)}
+                activeKey={findActiveKey()}
+                userData={userData}
+                isLoadingUserData={isLoadingUserData}
+            />
+
+            {/* Desktop Sidebar */}
             <div
                 className={cn(
                     "relative h-full w-72 flex-none flex-col !border-r-small border-divider p-6 transition-width hidden sm:flex",
@@ -229,7 +245,7 @@ export default function Component({ children }: { children: ReactNode[] }) {
                 </div>
             </div>
             <div className="flex-1 flex flex-col min-h-0 w-full p-4">
-                <header className="container mx-auto !py-4 flex-none flex items-center gap-3 rounded-medium border-small border-divider">
+                <header className="custom-container mx-auto !py-4 flex-none flex items-center gap-3 rounded-medium border-small border-divider">
                     {isMobile ? (
                         <Button isIconOnly size="sm" variant="light" onPress={onToggle}>
                             <Icon

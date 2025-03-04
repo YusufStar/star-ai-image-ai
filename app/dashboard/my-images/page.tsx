@@ -7,7 +7,7 @@ const GalleryPage = async () => {
     const { data: images } = await getImages()
 
     return (
-        <section className="container mx-auto">
+        <section className="custom-container mx-auto">
             <PageHeader subtitle="Here you can see all the images you have generated. Click on an image to view details." title="My Images" />
 
             <GalleryComponent images={images || []} />

@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/header"
 
 const GenerateImage = () => {
     return (
-        <div className="container mx-auto h-fit w-full">
+        <div className="custom-container mx-auto h-fit w-full">
             <PageHeader subtitle="Create unique AI-generated images by configuring your preferences below." title="Generate Image" />
 
             <section className="w-full h-fit overflow-y-auto flex flex-col-reverse xl:flex-row gap-4">

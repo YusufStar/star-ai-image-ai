@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import Replicate from "replicate";
 
 import { getUser } from "@/actions/auth-actions";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import Replicate from "replicate";
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN,
