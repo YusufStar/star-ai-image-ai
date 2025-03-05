@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         .update({
           training_status: "succeeded",
           training_time: body.metrics?.total_time ?? null,
-          version: body.output?.version.split(":") ?? null,
+          version: body.output?.version.split(":")[1] ?? null,
         })
         .eq("user_id", userId)
         .eq("model_id", modelName);

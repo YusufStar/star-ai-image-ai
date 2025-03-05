@@ -65,13 +65,15 @@ const ModelList = ({ initialData }: ModelsListProps) => {
       }
 
       // Check if any model is in training state
-      const hasTrainingModel = models?.some(model => 
-        model.training_status === "starting" || model.training_status === "processing"
+      const hasTrainingModel = models?.some(
+        (model) =>
+          model.training_status === "starting" ||
+          model.training_status === "processing"
       );
 
       // Set interval based on training status (2s if training, 5s otherwise)
       const intervalTime = hasTrainingModel ? 2000 : 5000;
-      
+
       pollingIntervalRef.current = setInterval(() => {
         refetchModels();
       }, intervalTime);
@@ -306,17 +308,23 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                   <span className="text-xs sm:text-sm">Details</span>
                 </Button>
 
-                <Button
-                  size="sm"
-                  variant="solid"
-                  color="primary"
-                  className="min-w-0 h-6 sm:h-8 px-2 sm:px-4"
-                  startContent={
-                    <Icon icon="mdi:play" className="text-xs sm:text-sm" />
-                  }
+                <Link
+                  isDisabled={model.training_status !== "succeeded"}
+                  href={`/dashboard/generate-image?model_id=${model.model_id}:${model.version}`}
                 >
-                  <span className="text-xs sm:text-sm">Use Model</span>
-                </Button>
+                  <Button
+                    size="sm"
+                    variant="solid"
+                    color="primary"
+                    className="min-w-0 h-6 sm:h-8 px-2 sm:px-4"
+                    isDisabled={model.training_status !== "succeeded"}
+                    startContent={
+                      <Icon icon="mdi:play" className="text-xs sm:text-sm" />
+                    }
+                  >
+                    <span className="text-xs sm:text-sm">Use Model</span>
+                  </Button>
+                </Link>
               </div>
             </CardBody>
           </Card>
