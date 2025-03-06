@@ -6,7 +6,8 @@ import {
   upsertPriceRecord,
   manageSubscriptionStatusChange,
   deleteProductRecord,
-  deletePriceRecord
+  deletePriceRecord,
+  updateUserCredits
 } from '@/lib/supabase/admin';
 
 const relevantEvents = new Set([
@@ -75,6 +76,10 @@ export async function POST(req: Request) {
               checkoutSession.customer as string,
               true
             );
+          }
+
+          if (checkoutSession.status === 'complete') {
+            await updateUserCredits(checkoutSession.client_reference_id as string, checkoutSession.metadata);
           }
           break;
         default:

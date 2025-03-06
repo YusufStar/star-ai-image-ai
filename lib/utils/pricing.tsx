@@ -19,7 +19,7 @@ export interface PriceWithProduct extends Price {
 }
 
 export interface SubscriptionWithProduct extends Subscription {
-  prices: PriceWithProduct[];
+  prices: PriceWithProduct;
 }
 
 export interface RenderPricingButtonProps {

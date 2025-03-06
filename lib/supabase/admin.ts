@@ -295,11 +295,33 @@ const upsertPriceRecord = async (
   }
 };
 
+const updateUserCredits = async (uuid: string, metadata: any) => {
+  const creditsData = {
+    image_generation_count: (metadata as any)?.image_generation_count || 0,
+    model_training_count: (metadata as any)?.model_training_count || 0,
+    max_image_generation_count:
+      (metadata as any)?.max_image_generation_count || 0,
+    max_model_training_count: (metadata as any)?.max_model_training_count || 0,
+  };
+
+  const { error: updateError } = await supabaseAdmin
+    .from("credits")
+    .update(creditsData)
+    .eq("user_id", uuid);
+    
+  if (updateError) {
+    throw new Error(`User credits update failed: ${updateError.message}`);
+  }
+
+
+};
+
 export {
   upsertProductRecord,
   upsertPriceRecord,
   deleteProductRecord,
   deletePriceRecord,
   createOrRetrieveCustomer,
+  updateUserCredits,
   manageSubscriptionStatusChange,
 };

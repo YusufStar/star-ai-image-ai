@@ -31,7 +31,7 @@ interface PriceWithProduct extends Price {
 }
 
 interface SubscriptionWithProduct extends Subscription {
-  prices: PriceWithProduct[];
+  prices: PriceWithProduct;
 }
 
 interface PlanSummaryProps {
@@ -213,5 +213,24 @@ export default function PlanSummary({
     );
   }
 
-  return <div>PlanSummary</div>;
+  const {
+    products: subscriptionProduct,
+    unit_amount,
+    currency,
+  } = subscription.prices;
+
+  const priceString = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency!,
+    minimumFractionDigits: 0,
+  }).format((unit_amount || 0) / 100);
+
+  console.log({
+    subscriptionProduct,
+    unit_amount,
+    currency,
+    priceString,
+  });
+
+  return <div>Plan Card</div>;
 }

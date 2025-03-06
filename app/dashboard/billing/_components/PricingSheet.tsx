@@ -13,7 +13,6 @@ import {
   CardFooter,
   Divider,
   Switch,
-  Progress,
 } from "@heroui/react";
 import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
@@ -372,52 +371,6 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
                   );
                 })}
             </div>
-
-            {/* Usage Information - Only shown for active subscriptions */}
-            {subscription && subscription.status === "active" && (
-              <motion.div
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-3 border border-default-200 rounded-lg"
-                initial={{ opacity: 0, y: 10 }}
-                transition={{ delay: 0.3 }}
-              >
-                <h3 className="text-xs font-semibold mb-3 flex items-center gap-1.5">
-                  <Icon
-                    className="text-primary w-3 h-3"
-                    icon="solar:chart-bold"
-                  />
-                  Current Usage
-                </h3>
-
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span>Image Generation</span>
-                      <span className="font-medium">50/100</span>
-                    </div>
-                    <Progress
-                      aria-label="Image generation usage"
-                      color="primary"
-                      size="sm"
-                      value={50}
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span>Model Training</span>
-                      <span className="font-medium">2/5</span>
-                    </div>
-                    <Progress
-                      aria-label="Model training usage"
-                      color="primary"
-                      size="sm"
-                      value={40}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
           </DrawerBody>
 
           <DrawerFooter className="flex justify-between items-center px-4">

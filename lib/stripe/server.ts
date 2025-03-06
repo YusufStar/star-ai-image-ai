@@ -51,6 +51,11 @@ export async function checkoutWithStripe(
       allow_promotion_codes: true,
       billing_address_collection: 'required',
       customer,
+      client_reference_id: user.id,
+      metadata: {
+        image_generation_count: (price.metadata as any)?.image_generation_count || 0,
+        model_training_count: (price.metadata as any)?.model_training_count || 0
+      },
       customer_update: {
         address: 'auto'
       },
