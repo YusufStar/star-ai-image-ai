@@ -38,12 +38,14 @@ interface PlanSummaryProps {
   subscription: SubscriptionWithProduct | null;
   user: User | null;
   products: ProductWithPrices[] | null;
+  credits: Tables<"credits"> | null;
 }
 
 export default function PlanSummary({
   subscription,
   products,
   user,
+  credits,
 }: PlanSummaryProps) {
   if (!subscription || subscription.status !== "active") {
     return (
@@ -225,11 +227,20 @@ export default function PlanSummary({
     minimumFractionDigits: 0,
   }).format((unit_amount || 0) / 100);
 
+  const imageGenCount = credits?.image_generation_count || 0;
+  const modelTrainingCount = credits?.model_training_count || 0;
+  const maxImageGenCount = credits?.max_image_generation_count || 0;
+  const maxModelTrainingCount = credits?.max_model_training_count || 0;
+
   console.log({
     subscriptionProduct,
     unit_amount,
     currency,
     priceString,
+    imageGenCount,
+    modelTrainingCount,
+    maxImageGenCount,
+    maxModelTrainingCount,
   });
 
   return <div>Plan Card</div>;

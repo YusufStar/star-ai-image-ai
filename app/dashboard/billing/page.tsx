@@ -5,6 +5,7 @@ import PlanSummary from "./_components/PlanSummary";
 import { getSubscription, getProducts, getUser } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/header";
+import { getCredits } from "@/actions/credit-actions";
 
 const BillingPage = async () => {
   const supabase = await createClient();
@@ -18,6 +19,8 @@ const BillingPage = async () => {
     redirect("/login?mode=signup");
   }
 
+  const credits = await getCredits();
+
   return (
     <div className="custom-container mx-auto w-full">
       <PageHeader
@@ -26,7 +29,12 @@ const BillingPage = async () => {
       />
 
       <div className="grid gap-10">
-        <PlanSummary products={products || []} subscription={subscription} user={user} />
+        <PlanSummary
+          products={products || []}
+          subscription={subscription}
+          user={user}
+          credits={credits.data}
+        />
       </div>
     </div>
   );
