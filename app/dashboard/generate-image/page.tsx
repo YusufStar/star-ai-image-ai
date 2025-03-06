@@ -17,7 +17,7 @@ const GenerateImage = async ({
   const { data: userModels } = await fetchModels();
 
   return (
-    <div className="custom-container mx-auto h-fit w-full">
+    <div className="custom-container mx-auto w-full">
       <PageHeader
         subtitle="Create unique AI-generated images by configuring your preferences below."
         title="Generate Image"

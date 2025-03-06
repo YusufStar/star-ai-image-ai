@@ -5,16 +5,24 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Button,
   Switch,
   Divider,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { User } from "@supabase/supabase-js";
+import { useRouter, usePathname } from "next/navigation";
 
+import {
+  renderPricingButton,
+  ProductWithPrices,
+  SubscriptionWithProduct,
+} from "@/lib/utils/pricing";
 import { Tables } from "@/database.type";
-
+import { getErrorRedirect } from "@/lib/helpers";
+import { getStripe } from "@/lib/stripe/client";
+import { checkoutWithStripe } from "@/lib/stripe/server";
 type Product = Tables<"products">;
 type Price = Tables<"prices">;
 
@@ -24,9 +32,15 @@ interface ProductWithPrice extends Product {
 
 export default function Pricing({
   products,
+  user = null,
+  subscription = null,
 }: {
   products: ProductWithPrice[];
+  user?: User | null;
+  subscription?: SubscriptionWithProduct | null;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isYearly, setIsYearly] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -51,7 +65,43 @@ export default function Pricing({
       (price) => price.interval === (isYearly ? "year" : "month")
     );
 
-    return price ? formatPrice(price.unit_amount || 0) : "$0";
+    return {
+      formatted: price ? formatPrice(price.unit_amount || 0) : "$0",
+      raw: price || null,
+    };
+  };
+
+  const handleStripeCheckout = async (price: Price) => {
+    if (!user) {
+      return router.push("/login?mode=register");
+    }
+
+    const { errorRedirect, sessionId } = await checkoutWithStripe(
+      price,
+      pathname
+    );
+
+    if (errorRedirect) {
+      return router.push(errorRedirect);
+    }
+
+    if (!sessionId) {
+      return router.push(
+        getErrorRedirect(
+          pathname,
+          "An unknown error occurred",
+          "Please try again later or contact us."
+        )
+      );
+    }
+
+    const stripe = await getStripe();
+
+    await stripe?.redirectToCheckout({ sessionId: sessionId as string });
+  };
+
+  const handleStripePortalRequest = async () => {
+    return "Stripe portal request";
   };
 
   // Animation variants
@@ -175,6 +225,7 @@ export default function Pricing({
           {products.map((product, index) => {
             const isPro = product.name === "Pro";
             const isEnterprise = product.name === "Enterprise";
+            const priceInfo = getPrice(product);
 
             return (
               <motion.div
@@ -220,7 +271,9 @@ export default function Pricing({
                               : "solar:user-id-bold-duotone"
                         }
                       />
-                      <h3 className="text-base sm:text-lg font-bold">{product.name}</h3>
+                      <h3 className="text-base sm:text-lg font-bold">
+                        {product.name}
+                      </h3>
                     </div>
                     <p className="text-foreground-600 text-xs">
                       {product.description?.split(".")[0] ||
@@ -231,7 +284,7 @@ export default function Pricing({
                   <CardBody className="py-3 sm:py-4 px-3 sm:px-4">
                     <div className="flex items-baseline gap-1 mb-3 sm:mb-4">
                       <span className="text-2xl sm:text-3xl font-bold">
-                        {getPrice(product)}
+                        {priceInfo.formatted}
                       </span>
                       <span className="text-foreground-600 text-xs sm:text-sm">
                         /{isYearly ? "year" : "month"}
@@ -266,29 +319,17 @@ export default function Pricing({
                   </CardBody>
 
                   <CardFooter className="pt-0 pb-4 px-4">
-                    <Button
-                      className="w-full"
-                      color={
-                        isPro ? "primary" : isEnterprise ? "warning" : "default"
-                      }
-                      radius="full"
-                      size="md"
-                      startContent={
-                        <Icon
-                          className="w-3.5 h-3.5"
-                          icon={
-                            isPro ? "solar:bolt-bold" : "solar:arrow-right-bold"
-                          }
-                        />
-                      }
-                      variant={isPro ? "solid" : "bordered"}
-                    >
-                      {isPro
-                        ? "Get Started"
-                        : isEnterprise
-                          ? "Contact Sales"
-                          : "Choose Plan"}
-                    </Button>
+                    {renderPricingButton({
+                      subscription,
+                      user,
+                      product: product as unknown as ProductWithPrices,
+                      price: priceInfo.raw,
+                      handleStripeCheckout,
+                      handleStripePortalRequest,
+                      variant: "full",
+                      isPro,
+                      isEnterprise,
+                    })}
                   </CardFooter>
                 </Card>
               </motion.div>

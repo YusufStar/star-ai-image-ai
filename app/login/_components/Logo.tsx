@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+
 import { AcmeIcon } from "../../_components/acme";
 
 export default function Logo() {

@@ -37,7 +37,6 @@ export const toDateTime = (secs: number) => {
 export const calculateTrialEndUnixTimestamp = (
   trialPeriodDays: number | null | undefined
 ) => {
-  // Check if trialPeriodDays is null, undefined, or less than 2 days
   if (
     trialPeriodDays === null ||
     trialPeriodDays === undefined ||

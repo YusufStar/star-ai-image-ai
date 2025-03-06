@@ -9,7 +9,7 @@ const ModelsPage = async () => {
   const data = await fetchModels();
 
   return (
-    <section className="custom-container mx-auto">
+    <section className="custom-container mx-auto w-full">
       <PageHeader
         subtitle="View and manage your trained models."
         title="My Models"
