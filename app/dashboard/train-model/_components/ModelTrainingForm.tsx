@@ -108,7 +108,6 @@ const ModelTrainingForm = () => {
   async function onSubmit(values: FormValues) {
     try {
       setIsLoading(true);
-      console.log("Form values:", values); // Debug log
       
       const data = await getPresignedStoragUrl(values.zipFile?.[0].name);
 
@@ -119,6 +118,7 @@ const ModelTrainingForm = () => {
           variant: "flat",
           color: "danger",
         });
+
         return;
       }
 
@@ -167,7 +167,6 @@ const ModelTrainingForm = () => {
         color: "success",
       });
     } catch (error) {
-      console.error(error);
       addToast({
         title: "Error",
         description: String(error) || "An unexpected error occurred",
@@ -202,8 +201,8 @@ const ModelTrainingForm = () => {
           {/* Gender Selection */}
           <div>
             <Controller
-              name="gender"
               control={control}
+              name="gender"
               render={({ field }) => (
                 <RadioGroup
                   label="Please select the gender of the images"

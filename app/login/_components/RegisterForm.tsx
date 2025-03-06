@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, Input, Link, Divider, Checkbox, Form } from "@heroui/react";
+import { Button, Input, Link, Checkbox, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 interface RegisterFormProps {
@@ -48,34 +48,17 @@ export default function RegisterForm({
   return (
     <>
       <div className="w-full text-left">
-        <p className="pb-2 text-xl font-medium">Create Account</p>
+        <p className="pb-2 text-xl font-medium sm:text-2xl">Create Account</p>
         <p className="text-small text-default-500">Sign up for a new account to get started</p>
-      </div>
-
-      <div className="flex w-full flex-col gap-2">
-        <Button
-          startContent={<Icon icon="flat-color-icons:google" width={24} />}
-          variant="bordered"
-        >
-          Sign Up with Google
-        </Button>
-        <Button
-          startContent={<Icon className="text-default-500" icon="fe:github" width={24} />}
-          variant="bordered"
-        >
-          Sign Up with Github
-        </Button>
-      </div>
-
-      <div className="flex w-full items-center gap-4 py-2">
-        <Divider className="flex-1" />
-        <p className="shrink-0 text-tiny text-default-500">OR</p>
-        <Divider className="flex-1" />
       </div>
 
       <Form className="flex w-full flex-col gap-3" onSubmit={onSubmit}>
         <Input
           isRequired
+          classNames={{
+            label: "text-sm sm:text-base",
+            input: "text-sm sm:text-base"
+          }}
           errorMessage={getFullNameError(full_name)}
           isInvalid={getFullNameError(full_name) !== null}
           label="Full Name"
@@ -88,6 +71,10 @@ export default function RegisterForm({
         />
         <Input
           isRequired
+          classNames={{
+            label: "text-sm sm:text-base",
+            input: "text-sm sm:text-base"
+          }}
           errorMessage={getEmailError(email)}
           isInvalid={getEmailError(email) !== null}
           label="Email Address"
@@ -100,16 +87,20 @@ export default function RegisterForm({
         />
         <Input
           isRequired
+          classNames={{
+            label: "text-sm sm:text-base",
+            input: "text-sm sm:text-base"
+          }}
           endContent={
             <button type="button" onClick={onToggleVisibility}>
               {isVisible ? (
                 <Icon
-                  className="pointer-events-none text-2xl text-default-400"
+                  className="pointer-events-none text-xl sm:text-2xl text-default-400"
                   icon="solar:eye-closed-linear"
                 />
               ) : (
                 <Icon
-                  className="pointer-events-none text-2xl text-default-400"
+                  className="pointer-events-none text-xl sm:text-2xl text-default-400"
                   icon="solar:eye-bold"
                 />
               )}
@@ -127,6 +118,10 @@ export default function RegisterForm({
         />
         <Input
           isRequired
+          classNames={{
+            label: "text-sm sm:text-base",
+            input: "text-sm sm:text-base"
+          }}
           errorMessage={getConfirmPasswordError(password, confirmPassword)}
           isInvalid={getConfirmPasswordError(password, confirmPassword) !== null}
           label="Confirm Password"
@@ -140,6 +135,9 @@ export default function RegisterForm({
         <Checkbox
           isRequired
           className="py-4"
+          classNames={{
+            label: "text-xs sm:text-sm"
+          }}
           isSelected={terms}
           size="sm"
           onValueChange={onTermsChange}
@@ -154,7 +152,7 @@ export default function RegisterForm({
           </Link>
         </Checkbox>
         <Button
-          className="w-full"
+          className="w-full h-10 sm:h-11 text-sm sm:text-base"
           color="primary"
           isLoading={loading}
           type="submit"
@@ -163,7 +161,7 @@ export default function RegisterForm({
         </Button>
       </Form>
 
-      <p className="text-center text-small">
+      <p className="text-center text-xs sm:text-sm">
         Already have an account?&nbsp;
         <Link href="?mode=login" size="sm">
           Log In

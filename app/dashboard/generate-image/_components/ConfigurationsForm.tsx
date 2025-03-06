@@ -18,10 +18,9 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Spinner,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { useEffect, Fragment, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import useGeneratedStore from "@/store/useGeneratedStore";
 import { Tables } from "@/database.type";
@@ -263,7 +262,7 @@ const ConfigurationsForm = ({ userModels, model_id }: ConfigurationsProps) => {
         prompt: promptValue,
       });
     } catch (error) {
-      console.log(error);
+      // Error handled by the action
     }
   };
 
@@ -289,9 +288,9 @@ const ConfigurationsForm = ({ userModels, model_id }: ConfigurationsProps) => {
               <InfoTooltip content={tooltipContent.model} />
             </div>
             <Select
-              selectedKeys={[selectedModelKey]}
               isDisabled={loading}
               placeholder="Select model"
+              selectedKeys={[selectedModelKey]}
               onChange={(e) => setValue("model", e.target.value as any)}
             >
               {[

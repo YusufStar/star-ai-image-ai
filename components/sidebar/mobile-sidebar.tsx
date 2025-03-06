@@ -8,15 +8,14 @@ import {
   Button, 
   Avatar, 
   Spacer, 
-  ScrollShadow, 
-  Tooltip,
+  ScrollShadow,
   Skeleton
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { cn } from "@heroui/react";
 
 import Sidebar from "./sidebar";
 import { sectionItems } from "./sidebar-items";
+
 import { Logo } from "@/components/icons";
 import { logout } from "@/actions/auth-actions";
 
@@ -46,15 +45,15 @@ export default function MobileSidebar({
 
   return (
     <Drawer 
-      isOpen={isOpen} 
-      onClose={onClose}
-      placement="left"
-      size="xs"
+      hideCloseButton 
       classNames={{
         base: "m-0 h-full w-[85%] max-w-[300px] rounded-r-large rounded-l-none",
         wrapper: "items-start justify-start"
       }}
-      hideCloseButton
+      isOpen={isOpen}
+      placement="left"
+      size="xs"
+      onClose={onClose}
     >
       <DrawerContent>
         <DrawerBody className="p-0">
@@ -69,9 +68,9 @@ export default function MobileSidebar({
               </span>
               <Button 
                 isIconOnly 
+                className="ml-auto" 
                 size="sm" 
-                variant="light" 
-                className="ml-auto"
+                variant="light"
                 onPress={onClose}
               >
                 <Icon

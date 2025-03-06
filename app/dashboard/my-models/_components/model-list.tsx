@@ -1,8 +1,5 @@
 "use client";
 
-import { deleteModel, fetchModels } from "@/actions/model-actions";
-import { NotFoundDataCard } from "@/components/not-found-data-card";
-import { Database } from "@/database.type";
 import {
   Button,
   Card,
@@ -22,6 +19,10 @@ import {
 import { Icon } from "@iconify/react";
 import { formatDistance } from "date-fns";
 import { useState, useEffect, useRef } from "react";
+
+import { Database } from "@/database.type";
+import { NotFoundDataCard } from "@/components/not-found-data-card";
+import { deleteModel, fetchModels } from "@/actions/model-actions";
 
 type ModelType = {
   error: string | null;
@@ -45,6 +46,7 @@ const ModelList = ({ initialData }: ModelsListProps) => {
 
   const refetchModels = async () => {
     const { data, success, error } = await fetchModels();
+
     if (success) {
       setModels(data);
     }
@@ -93,16 +95,16 @@ const ModelList = ({ initialData }: ModelsListProps) => {
   if (models?.length === 0) {
     return (
       <NotFoundDataCard
-        title="No models found"
-        subTitle="Start building amazing AI models"
         customButton={
-          <Link href="/dashboard/train-model" className="pt-2">
-            <Button color="primary" variant="solid" size="sm" radius="md">
-              <Icon icon="mdi:plus" className="mr-1" />
+          <Link className="pt-2" href="/dashboard/train-model">
+            <Button color="primary" radius="md" size="sm" variant="solid">
+              <Icon className="mr-1" icon="mdi:plus" />
               Create Model
             </Button>
           </Link>
         }
+        subTitle="Start building amazing AI models"
+        title="No models found"
       />
     );
   }
@@ -123,6 +125,7 @@ const ModelList = ({ initialData }: ModelsListProps) => {
 
   const handleConfirmDelete = async () => {
     const { error, success } = await deleteModel(selectedModel?.id!);
+
     if (success) {
       addToast({
         title: "Model deleted successfully.",
@@ -168,16 +171,16 @@ const ModelList = ({ initialData }: ModelsListProps) => {
 
     return (
       <Chip
-        color={statusInfo.color}
-        variant="flat"
-        size="sm"
-        radius="full"
         className="text-xs font-medium h-7 px-2"
+        color={statusInfo.color}
+        radius="full"
+        size="sm"
         startContent={
           isTraining ? (
-            <Spinner size="sm" color="primary" className="mr-1" />
+            <Spinner className="mr-1" color="primary" size="sm" />
           ) : (
             <Icon
+              className="text-xs mr-1"
               icon={
                 status === "succeeded"
                   ? "mdi:check-circle"
@@ -185,10 +188,10 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                     ? "mdi:alert-circle"
                     : "mdi:clock-outline"
               }
-              className="text-xs mr-1"
             />
           )
         }
+        variant="flat"
       >
         {statusInfo.label}
       </Chip>
@@ -220,17 +223,17 @@ const ModelList = ({ initialData }: ModelsListProps) => {
               <div className="flex items-start justify-between mb-3 sm:mb-4">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <Avatar
+                    className="bg-primary-50 text-primary-600 hidden xs:flex"
+                    color="primary"
                     name={model.model_name || ""}
                     size="sm"
-                    color="primary"
-                    className="bg-primary-50 text-primary-600 hidden xs:flex"
                   />
                   <div>
                     <h3 className="text-sm sm:text-base font-semibold line-clamp-1">
                       {model.model_name}
                     </h3>
                     <div className="flex items-center gap-1 text-xs text-default-400 mt-1">
-                      <Icon icon="mdi:calendar-clock" className="text-xs" />
+                      <Icon className="text-xs" icon="mdi:calendar-clock" />
                       <span>
                         {formatDistance(
                           new Date(model.created_at),
@@ -247,17 +250,17 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                   {getStatusBadge(model.training_status)}
                   <Button
                     isIconOnly
-                    size="sm"
-                    variant="light"
-                    color="danger"
                     className="min-w-0 h-7 w-7 rounded-full"
-                    onClick={() => handleDeleteClick(model)}
+                    color="danger"
                     isDisabled={
                       !model.training_status ||
                       ["starting", "processing"].includes(model.training_status)
                     }
+                    size="sm"
+                    variant="light"
+                    onClick={() => handleDeleteClick(model)}
                   >
-                    <Icon icon="mdi:trash-outline" className="text-sm" />
+                    <Icon className="text-sm" icon="mdi:trash-outline" />
                   </Button>
                 </div>
               </div>
@@ -267,8 +270,8 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                 <div className="rounded-md bg-default-50 px-2 sm:px-3 py-1.5 sm:py-2 border border-default-100">
                   <div className="flex items-center gap-1 text-xs sm:text-sm text-default-500">
                     <Icon
-                      icon="mdi:clock-outline"
                       className="text-primary-500 text-xs sm:text-sm"
+                      icon="mdi:clock-outline"
                     />
                     <span>Duration</span>
                   </div>
@@ -280,8 +283,8 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                 <div className="rounded-md bg-default-50 px-2 sm:px-3 py-1.5 sm:py-2 border border-default-100">
                   <div className="flex items-center gap-1 text-xs sm:text-sm text-default-500">
                     <Icon
-                      icon="mdi:gender-male-female"
                       className="text-primary-500 text-xs sm:text-sm"
+                      icon="mdi:gender-male-female"
                     />
                     <span>Gender</span>
                   </div>
@@ -294,33 +297,33 @@ const ModelList = ({ initialData }: ModelsListProps) => {
               {/* Action Buttons */}
               <div className="flex justify-between items-center">
                 <Button
-                  size="sm"
-                  variant="light"
-                  color="default"
                   className="min-w-0 h-6 sm:h-8 px-2 sm:px-3 text-default-500"
+                  color="default"
+                  size="sm"
                   startContent={
                     <Icon
-                      icon="mdi:eye-outline"
                       className="text-xs sm:text-sm"
+                      icon="mdi:eye-outline"
                     />
                   }
+                  variant="light"
                 >
                   <span className="text-xs sm:text-sm">Details</span>
                 </Button>
 
                 <Link
-                  isDisabled={model.training_status !== "succeeded"}
                   href={`/dashboard/generate-image?model_id=${model.model_id}:${model.version}`}
+                  isDisabled={model.training_status !== "succeeded"}
                 >
                   <Button
-                    size="sm"
-                    variant="solid"
-                    color="primary"
                     className="min-w-0 h-6 sm:h-8 px-2 sm:px-4"
+                    color="primary"
                     isDisabled={model.training_status !== "succeeded"}
+                    size="sm"
                     startContent={
-                      <Icon icon="mdi:play" className="text-xs sm:text-sm" />
+                      <Icon className="text-xs sm:text-sm" icon="mdi:play" />
                     }
+                    variant="solid"
                   >
                     <span className="text-xs sm:text-sm">Use Model</span>
                   </Button>
@@ -332,7 +335,7 @@ const ModelList = ({ initialData }: ModelsListProps) => {
       </div>
 
       {/* Delete Confirmation Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} backdrop="blur">
+      <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             <div className="text-xl font-bold">Delete Model</div>
@@ -345,10 +348,10 @@ const ModelList = ({ initialData }: ModelsListProps) => {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Avatar
+                    className="bg-primary-50 text-primary-600"
+                    color="primary"
                     name={selectedModel.model_name || ""}
                     size="lg"
-                    color="primary"
-                    className="bg-primary-50 text-primary-600"
                   />
                   <div>
                     <h3 className="text-lg font-semibold">
@@ -399,7 +402,7 @@ const ModelList = ({ initialData }: ModelsListProps) => {
 
                 <div className="bg-danger-50 p-3 rounded-lg border border-danger-200 text-danger-700">
                   <div className="flex items-start gap-2">
-                    <Icon icon="mdi:alert-circle" className="text-lg mt-0.5" />
+                    <Icon className="text-lg mt-0.5" icon="mdi:alert-circle" />
                     <div>
                       <p className="font-medium">Warning</p>
                       <p className="text-sm">
@@ -414,18 +417,18 @@ const ModelList = ({ initialData }: ModelsListProps) => {
           </ModalBody>
           <ModalFooter>
             <Button
-              variant="flat"
-              color="default"
-              onPress={onClose}
               className="font-medium"
+              color="default"
+              variant="flat"
+              onPress={onClose}
             >
               Cancel
             </Button>
             <Button
-              variant="solid"
-              color="danger"
-              onPress={handleConfirmDelete}
               className="font-medium"
+              color="danger"
+              variant="solid"
+              onPress={handleConfirmDelete}
             >
               Delete Model
             </Button>

@@ -17,6 +17,15 @@ export default {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },
+      borderColor: {
+        DEFAULT: 'hsl(var(--border))',
+      },
+      colors: {
+        border: {
+          DEFAULT: 'hsl(var(--border))',
+          light: 'hsl(var(--border-light))',
+        },
+      },
     },
   },
   darkMode: "class",

@@ -33,7 +33,7 @@ interface ForgotPasswordForm {
 
 export default function AuthForm() {
   const [isVisible, setIsVisible] = React.useState(false);
-  const [mode, setMode] = React.useState<"login" | "register" | "forgot-password">("register");
+  const [mode, setMode] = React.useState<"login" | "register" | "forgot-password">("login");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -51,6 +51,8 @@ export default function AuthForm() {
   const [loginLoading, setLoginLoading] = useState<boolean>(false)
 
   React.useEffect(() => {
+    if (!searchParams) return;
+    
     const currentMode = searchParams.get("mode");
 
     if (currentMode === "login" || currentMode === "register" || currentMode === "forgot-password") {
@@ -252,12 +254,13 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="flex w-full items-center justify-center bg-background lg:w-1/2">
+    <div className="flex w-full items-center justify-center h-full">
       <AnimatePresence mode="wait">
         {mode === "login" ? (
           <motion.div
             key="login"
             animate="animate"
+            className="w-full sm:w-[90%] md:w-[80%] lg:w-full"
             exit="exit"
             initial="initial"
             style={{
@@ -291,6 +294,7 @@ export default function AuthForm() {
           <motion.div
             key="register"
             animate="animate"
+            className="w-full sm:w-[90%] md:w-[80%] lg:w-full"
             exit="exit"
             initial="initial"
             style={{
@@ -330,6 +334,7 @@ export default function AuthForm() {
           <motion.div
             key="forgot-password"
             animate="animate"
+            className="w-full sm:w-[90%] md:w-[80%] lg:w-full"
             exit="exit"
             initial="initial"
             style={{

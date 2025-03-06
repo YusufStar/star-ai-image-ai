@@ -101,11 +101,11 @@ export default function Component({ children }: { children: ReactNode[] }) {
         <div className="flex h-screen w-full overflow-hidden">
             {/* Mobile Sidebar */}
             <MobileSidebar 
-                isOpen={isMobileSidebarOpen}
-                onClose={() => setIsMobileSidebarOpen(false)}
                 activeKey={findActiveKey()}
-                userData={userData}
                 isLoadingUserData={isLoadingUserData}
+                isOpen={isMobileSidebarOpen}
+                userData={userData}
+                onClose={() => setIsMobileSidebarOpen(false)}
             />
 
             {/* Desktop Sidebar */}

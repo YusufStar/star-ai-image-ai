@@ -19,7 +19,7 @@ export default function ForgotPasswordForm({
   return (
     <>
       <div className="w-full text-left">
-        <p className="pb-2 text-xl font-medium">Reset Password</p>
+        <p className="pb-2 text-xl font-medium sm:text-2xl">Reset Password</p>
         <p className="text-small text-default-500">Enter your email to reset your password</p>
       </div>
 
@@ -30,6 +30,10 @@ export default function ForgotPasswordForm({
       >
         <Input
           isRequired
+          classNames={{
+            label: "text-sm sm:text-base",
+            input: "text-sm sm:text-base"
+          }}
           errorMessage={getEmailError(email)}
           isInvalid={getEmailError(email) !== null}
           label="Email Address"
@@ -40,12 +44,12 @@ export default function ForgotPasswordForm({
           variant="underlined"
           onChange={(e) => onEmailChange(e.target.value)}
         />
-        <Button className="mt-2 w-full" color="primary" type="submit">
+        <Button className="mt-2 w-full h-10 sm:h-11 text-sm sm:text-base" color="primary" type="submit">
           Send Reset Link
         </Button>
       </Form>
 
-      <p className="text-center text-small">
+      <p className="text-center text-xs sm:text-sm">
         Remember your password?&nbsp;
         <Link href="?mode=login" size="sm">
           Log In

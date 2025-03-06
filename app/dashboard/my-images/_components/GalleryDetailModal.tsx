@@ -111,7 +111,6 @@ const GalleryDetailModal = ({
         icon: <Icon className="w-5 h-5" icon="solar:check-circle-bold" />,
       });
     } catch (error) {
-      console.error("Download failed:", error);
       addToast({
         title: "Error",
         description: "Failed to download image",
@@ -169,8 +168,8 @@ const GalleryDetailModal = ({
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   <Tooltip
-                    placement="bottom"
                     content={image.model?.split("/")[1].split(":")[0]}
+                    placement="bottom"
                   >
                     <div className="bg-content2 p-4 rounded-lg">
                       <p className="text-sm text-foreground-500">Model</p>
@@ -263,28 +262,28 @@ const GalleryDetailModal = ({
 
           <DrawerFooter>
             <div className="flex flex-col md:flex-row gap-3 w-full">
-              <Button variant="faded" onPress={onClose} className="w-full">
+              <Button className="w-full" variant="faded" onPress={onClose}>
                 Close
               </Button>
               <Button
+                className="w-full"
                 color="danger"
                 startContent={
                   <Icon className="w-4 h-4" icon="solar:trash-bin-trash-bold" />
                 }
                 variant="flat"
                 onPress={() => setIsDeleteModalOpen(true)}
-                className="w-full"
               >
                 Delete
               </Button>
               <Button
+                className="w-full"
                 color="primary"
                 endContent={
                   !isDownloading && <Icon icon="solar:download-bold" />
                 }
                 isLoading={isDownloading}
                 onPress={handleDownload}
-                className="w-full"
               >
                 {isDownloading ? "Downloading..." : "Download Image"}
               </Button>

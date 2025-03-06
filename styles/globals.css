@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --border: 215 16% 80%;
+    --border-light: 215 16% 90%;
+  }
+
+  .dark {
+    --border: 215 16% 30%;
+    --border-light: 215 16% 20%;
+  }
+}
+
 /* Modern Scrollbar Styles */
 @layer utilities {
 

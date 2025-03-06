@@ -1,8 +1,10 @@
+import crypto from "crypto";
+
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
-import crypto from "crypto";
-import { supabaseAdmin } from "@/lib/supabase/admin";
 import { Resend } from "resend";
+
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { EmailTemplate } from "@/components/email-templates/EmailTemplate";
 
 const replicate = new Replicate({
@@ -71,7 +73,7 @@ export async function POST(req: Request) {
         .from("models")
         .update({
           training_status: "succeeded",
-          training_time: body.metrics?.total_time ?? null,
+          training_time: Math.floor(body.metrics?.total_time ?? 0),
           version: body.output?.version.split(":")[1] ?? null,
         })
         .eq("user_id", userId)
@@ -100,8 +102,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.log("Webhook processing error: ", error);
-
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -1,7 +1,7 @@
-import { fetchModels } from "@/actions/model-actions";
 import ConfigurationsForm from "./_components/ConfigurationsForm";
 import GeneratedImages from "./_components/GeneratedImages";
 
+import { fetchModels } from "@/actions/model-actions";
 import { PageHeader } from "@/components/header";
 
 interface SearchParams {
@@ -26,8 +26,8 @@ const GenerateImage = async ({
       <section className="w-full h-fit overflow-y-auto flex flex-col-reverse xl:flex-row gap-4">
         <div className="w-full">
           <ConfigurationsForm
-            userModels={userModels ?? []}
             model_id={model_id}
+            userModels={userModels ?? []}
           />
         </div>
 

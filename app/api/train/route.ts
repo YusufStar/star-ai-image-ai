@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Replicate from "replicate";
 
 import { getUser } from "@/actions/auth-actions";
-import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 const replicate = new Replicate({

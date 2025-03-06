@@ -1,7 +1,9 @@
+import React from "react";
+
+import ModelList from "./_components/model-list";
+
 import { fetchModels } from "@/actions/model-actions";
 import { PageHeader } from "@/components/header";
-import React from "react";
-import ModelList from "./_components/model-list";
 
 const ModelsPage = async () => {
   const data = await fetchModels();
@@ -9,8 +11,8 @@ const ModelsPage = async () => {
   return (
     <section className="custom-container mx-auto">
       <PageHeader
-        title="My Models"
         subtitle="View and manage your trained models."
+        title="My Models"
       />
 
       <ModelList initialData={data}/>
