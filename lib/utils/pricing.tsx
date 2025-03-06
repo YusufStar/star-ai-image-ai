@@ -28,7 +28,7 @@ export interface RenderPricingButtonProps {
   product: ProductWithPrices | null;
   price: Price | null;
   handleStripeCheckout: (price: Price) => Promise<any>;
-  handleStripePortalRequest: () => Promise<string>;
+  handleStripePortalRequest: () => Promise<any>;
   variant?: "compact" | "full";
   isPro?: boolean;
   isEnterprise?: boolean;
@@ -59,19 +59,15 @@ export const renderPricingButton = ({
           />
         }
         variant={isPro ? "solid" : "bordered"}
-        onClick={() => {
+        onPress={async () => {
           if (user && price) {
-            handleStripeCheckout(price);
+            await handleStripeCheckout(price);
           } else if (user && subscription && subscription.status === "active") {
-            handleStripePortalRequest();
+            await handleStripePortalRequest();
           }
         }}
       >
-        {isPro
-          ? "Get Started"
-          : isEnterprise
-            ? "Contact Sales"
-            : "Choose Plan"}
+        {isPro ? "Get Started" : isEnterprise ? "Contact Sales" : "Choose Plan"}
       </Button>
     );
   }
@@ -91,18 +87,35 @@ export const renderPricingButton = ({
   }
 
   if (user && subscription && subscription.status === "active") {
+    // Check if this is the current plan or a different plan
+    const isCurrentPlan = subscription.prices.products?.id === product?.id;
+
     return (
       <Button
         fullWidth
         size="sm"
-        startContent={<Icon className="text-xs" icon="solar:settings-linear" />}
-        variant="bordered"
-        onClick={() => handleStripePortalRequest()}
+        color={isCurrentPlan ? "default" : "primary"}
+        startContent={
+          <Icon
+            className="text-xs"
+            icon={
+              isCurrentPlan ? "solar:settings-linear" : "solar:refresh-linear"
+            }
+          />
+        }
+        variant={isCurrentPlan ? "bordered" : "solid"}
+        onClick={() => {
+          if (isCurrentPlan) {
+            handleStripePortalRequest();
+          } else if (price) {
+            handleStripeCheckout(price);
+          }
+        }}
       >
-        Manage
+        {isCurrentPlan ? "Manage" : "Switch"}
       </Button>
     );
   }
 
   return null;
-}; 
+};

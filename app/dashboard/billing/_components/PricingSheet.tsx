@@ -13,6 +13,7 @@ import {
   CardFooter,
   Divider,
   Switch,
+  addToast,
 } from "@heroui/react";
 import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
@@ -26,7 +27,7 @@ import {
   SubscriptionWithProduct,
 } from "@/lib/utils/pricing";
 import { Tables } from "@/database.type";
-import { checkoutWithStripe } from "@/lib/stripe/server";
+import { checkoutWithStripe, createStripePortal } from "@/lib/stripe/server";
 import { getErrorRedirect } from "@/lib/helpers";
 import { getStripe } from "@/lib/stripe/client";
 
@@ -92,7 +93,16 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
   };
 
   const handleStripePortalRequest = async () => {
-    return "Stripe portal request";
+    addToast({
+      title: "Stripe portal request",
+      description: "Redirecting to Stripe portal",
+      color: "primary",
+      icon: "solar:info-circle-bold",
+    });
+    const redirectUrl = await createStripePortal(pathname);
+    if (redirectUrl) {
+      return router.push(redirectUrl);
+    }
   };
 
   // Format price using Intl.NumberFormat for proper currency formatting
@@ -125,15 +135,34 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
 
   if (!mounted) return null;
 
+  // Check if user has an active subscription
+  const hasActiveSubscription =
+    subscription && subscription.status === "active";
+
   return (
     <>
       <Button
-        color="primary"
+        color={hasActiveSubscription ? "default" : "primary"}
         size="sm"
-        startContent={<Icon icon="solar:star-bold" />}
-        onClick={() => setIsOpen(true)}
+        variant={hasActiveSubscription ? "bordered" : "solid"}
+        startContent={
+          <Icon
+            icon={
+              hasActiveSubscription
+                ? "solar:settings-linear"
+                : "solar:star-bold"
+            }
+          />
+        }
+        onClick={() => {
+          if (hasActiveSubscription) {
+            handleStripePortalRequest();
+          } else {
+            setIsOpen(true);
+          }
+        }}
       >
-        Upgrade Plan
+        {hasActiveSubscription ? "Manage Subscription" : "Upgrade Plan"}
       </Button>
 
       <Drawer

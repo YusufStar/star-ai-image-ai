@@ -7,6 +7,7 @@ import {
   CardHeader,
   Switch,
   Divider,
+  addToast,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
@@ -22,7 +23,7 @@ import {
 import { Tables } from "@/database.type";
 import { getErrorRedirect } from "@/lib/helpers";
 import { getStripe } from "@/lib/stripe/client";
-import { checkoutWithStripe } from "@/lib/stripe/server";
+import { checkoutWithStripe, createStripePortal } from "@/lib/stripe/server";
 type Product = Tables<"products">;
 type Price = Tables<"prices">;
 
@@ -101,7 +102,16 @@ export default function Pricing({
   };
 
   const handleStripePortalRequest = async () => {
-    return "Stripe portal request";
+    addToast({
+      title: "Stripe portal request",
+      description: "Redirecting to Stripe portal",
+      color: "primary",
+      icon: "solar:info-circle-bold",
+    });
+    const redirectUrl = await createStripePortal(pathname);
+    if (redirectUrl) {
+      return router.push(redirectUrl);
+    }
   };
 
   // Animation variants
