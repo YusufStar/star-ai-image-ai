@@ -297,6 +297,7 @@ const upsertPriceRecord = async (
 
 const updateUserCredits = async (uuid: string, metadata: any) => {
   const creditsData = {
+    user_id: uuid,
     image_generation_count: (metadata as any)?.image_generation_count || 0,
     model_training_count: (metadata as any)?.model_training_count || 0,
     max_image_generation_count:
@@ -306,7 +307,7 @@ const updateUserCredits = async (uuid: string, metadata: any) => {
 
   const { error: updateError } = await supabaseAdmin
     .from("credits")
-    .update(creditsData)
+    .upsert(creditsData)
     .eq("user_id", uuid);
     
   if (updateError) {
