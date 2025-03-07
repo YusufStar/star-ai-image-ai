@@ -10,7 +10,6 @@ import {
   Select,
   SelectItem,
   Input,
-  Badge,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -154,6 +153,7 @@ const GalleryComponent = ({ images }: GalleryProps) => {
     // Filter by search term (prompt)
     .filter((image) => {
       if (!filters.searchTerm) return true;
+
       return image.prompt
         ?.toLowerCase()
         .includes(filters.searchTerm.toLowerCase());
@@ -164,6 +164,7 @@ const GalleryComponent = ({ images }: GalleryProps) => {
         return true;
 
       const imageDate = new Date(image.created_at);
+
       return (
         imageDate >= filters.dateRange.startDate &&
         imageDate <= filters.dateRange.endDate
@@ -225,8 +226,8 @@ const GalleryComponent = ({ images }: GalleryProps) => {
               placeholder="Search by prompt..."
               startContent={
                 <Icon
-                  icon="solar:magnifer-linear"
                   className="text-foreground-500"
+                  icon="solar:magnifer-linear"
                 />
               }
               value={filters.searchTerm}
@@ -237,8 +238,8 @@ const GalleryComponent = ({ images }: GalleryProps) => {
           {/* Date Range Filter */}
           <div className={isTablet ? "col-span-1" : "col-span-1"}>
             <DateRangePicker 
-              onChange={handleDateRangeChange} 
-              ref={datePickerRef}
+              ref={datePickerRef} 
+              onChange={handleDateRangeChange}
             />
           </div>
 
@@ -269,7 +270,7 @@ const GalleryComponent = ({ images }: GalleryProps) => {
                   className="ml-1 p-0.5 rounded-full hover:bg-primary-200 transition-colors"
                   onClick={() => clearFilter("searchTerm")}
                 >
-                  <Icon icon="solar:close-circle-bold" className="w-4 h-4" />
+                  <Icon className="w-4 h-4" icon="solar:close-circle-bold" />
                 </button>
               </div>
             )}
@@ -284,17 +285,17 @@ const GalleryComponent = ({ images }: GalleryProps) => {
                   className="ml-1 p-0.5 rounded-full hover:bg-primary-200 transition-colors"
                   onClick={() => clearFilter("dateRange")}
                 >
-                  <Icon icon="solar:close-circle-bold" className="w-4 h-4" />
+                  <Icon className="w-4 h-4" icon="solar:close-circle-bold" />
                 </button>
               </div>
             )}
 
             <Button
-              size="sm"
-              variant="flat"
-              color="default"
               className="h-7 px-2 text-xs font-medium"
-              startContent={<Icon icon="solar:refresh-linear" className="w-3.5 h-3.5" />}
+              color="default"
+              size="sm"
+              startContent={<Icon className="w-3.5 h-3.5" icon="solar:refresh-linear" />}
+              variant="flat"
               onClick={clearAllFilters}
             >
               Clear all
@@ -394,12 +395,12 @@ const GalleryComponent = ({ images }: GalleryProps) => {
                     No matching images found
                   </h3>
                   <p className="text-foreground-500 mb-6 max-w-md">
-                    Try adjusting your filters to find what you're looking for.
+                    Try adjusting your filters to find what you&apos;re looking for.
                   </p>
                   <Button
+                    color="primary"
                     size="md"
                     variant="flat"
-                    color="primary"
                     onClick={clearAllFilters}
                   >
                     Clear all filters

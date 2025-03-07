@@ -9,16 +9,10 @@ import {
   Progress,
   Divider,
   Chip,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
 } from "@heroui/react";
 import { User } from "@supabase/supabase-js";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import { useState } from "react";
 import { format } from "date-fns";
 
 import PricingSheet from "./PricingSheet";
@@ -238,17 +232,6 @@ export default function PlanSummary({
   const modelTrainingCount = credits?.model_training_count || 0;
   const maxImageGenCount = credits?.max_image_generation_count || 0;
   const maxModelTrainingCount = credits?.max_model_training_count || 0;
-
-  console.log({
-    subscriptionProduct,
-    unit_amount,
-    currency,
-    priceString,
-    imageGenCount,
-    modelTrainingCount,
-    maxImageGenCount,
-    maxModelTrainingCount,
-  });
 
   // Calculate the renewal date (assuming it's 1 month from the current period start)
   const startDate = format(

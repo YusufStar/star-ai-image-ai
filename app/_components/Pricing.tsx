@@ -109,6 +109,7 @@ export default function Pricing({
       icon: "solar:info-circle-bold",
     });
     const redirectUrl = await createStripePortal(pathname);
+
     if (redirectUrl) {
       return router.push(redirectUrl);
     }
@@ -235,6 +236,7 @@ export default function Pricing({
           {products
             .sort((a, b) => {
               const order = { "Hobby": 1, "Pro": 2, "Enterprise": 3 };
+
               return (order[a.name as keyof typeof order] || 99) - (order[b.name as keyof typeof order] || 99);
             })
             .map((product, index) => {

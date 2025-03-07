@@ -30,10 +30,10 @@ const BillingPage = async () => {
 
       <div className="grid gap-10">
         <PlanSummary
+          credits={credits.data}
           products={products || []}
           subscription={subscription}
           user={user}
-          credits={credits.data}
         />
       </div>
     </div>

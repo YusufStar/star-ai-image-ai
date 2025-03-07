@@ -1,8 +1,8 @@
 "use server";
 
-import { Tables } from "@/database.type";
 import { getUser } from "./auth-actions";
 
+import { Tables } from "@/database.type";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 interface CreditsResponse {

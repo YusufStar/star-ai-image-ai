@@ -100,6 +100,7 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
       icon: "solar:info-circle-bold",
     });
     const redirectUrl = await createStripePortal(pathname);
+
     if (redirectUrl) {
       return router.push(redirectUrl);
     }
@@ -144,7 +145,6 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
       <Button
         color={hasActiveSubscription ? "default" : "primary"}
         size="sm"
-        variant={hasActiveSubscription ? "bordered" : "solid"}
         startContent={
           <Icon
             icon={
@@ -154,6 +154,7 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
             }
           />
         }
+        variant={hasActiveSubscription ? "bordered" : "solid"}
         onClick={() => {
           if (hasActiveSubscription) {
             handleStripePortalRequest();
@@ -209,6 +210,7 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
                 products
                   .sort((a, b) => {
                     const order = { "Hobby": 1, "Pro": 2, "Enterprise": 3 };
+
                     return (order[a.name as keyof typeof order] || 99) - (order[b.name as keyof typeof order] || 99);
                   })
                   .map((product, index) => {

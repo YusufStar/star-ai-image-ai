@@ -15,6 +15,8 @@ import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@heroui/react";
 import { usePathname } from "next/navigation";
 
+import Logo from "../login/_components/Logo";
+
 import { Breadcrumb } from "./breadcumbs";
 
 import { sectionItems } from "@/components/sidebar/sidebar-items";
@@ -22,7 +24,6 @@ import Sidebar from "@/components/sidebar/sidebar";
 import MobileSidebar from "@/components/sidebar/mobile-sidebar";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { getUser, logout } from "@/actions/auth-actions";
-import Logo from "../login/_components/Logo";
 
 interface UserData {
   name: string;

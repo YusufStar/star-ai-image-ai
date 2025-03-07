@@ -4,6 +4,8 @@ import React from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 
+import Logo from "../login/_components/Logo";
+
 import LandingNavbar from "./LandingNavbar";
 import Hero from "./Hero";
 import Features from "./Features";
@@ -12,7 +14,6 @@ import Contact from "./Contact";
 import Pricing from "./Pricing";
 
 import { Tables } from "@/database.type";
-import Logo from "../login/_components/Logo";
 
 type Product = Tables<"products">;
 type Price = Tables<"prices">;

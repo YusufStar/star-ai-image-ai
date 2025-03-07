@@ -7,11 +7,11 @@ import Replicate from "replicate";
 import { imageMeta } from "image-meta";
 
 import { getUser } from "./auth-actions";
+import { getCredits } from "./credit-actions";
 
 import { ImageGenerationFormSchema } from "@/app/dashboard/generate-image/_components/ConfigurationsForm";
 import { createClient } from "@/lib/supabase/server";
 import { Database } from "@/database.type";
-import { getCredits } from "./credit-actions";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
@@ -37,6 +37,7 @@ export async function generateImage(
     }
 
     const {data: credits} = await getCredits()
+
     if (!credits?.image_generation_count || credits.image_generation_count <= 0) {
       return {
         error: "You have no credits left",
@@ -122,14 +123,11 @@ export async function storeImages(data: storeImageInput[]) {
     };
   }
 
-  console.log("All images to be stored:", data);
-
   const uploadResults = [];
 
   for (const img of data) {
     const arrayBuffer = await imgUrlToBlog(img.url);
     const { width, height, type } = imageMeta(new Uint8Array(arrayBuffer));
-    console.log("Processing image:", img);
 
     const fileName = `image_${randomUUID()}.${type}`;
     const filePath = `${user.id}/${fileName}`;

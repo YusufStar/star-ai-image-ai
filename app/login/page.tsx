@@ -1,10 +1,11 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
 import Logo from "./_components/Logo";
 import AuthForm from "./_components/AuthForm";
 import AuthenticationSidebar from "./_components/RightSide";
+
 import { getUser } from "@/actions/auth-actions";
-import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
   const { data: user } = await getUser();

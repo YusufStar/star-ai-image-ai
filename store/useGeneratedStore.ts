@@ -42,8 +42,6 @@ const useGeneratedStore = create<GenerateState>((set) => ({
                 }
             })
 
-            console.log("Generated images to be stored:", dataWithUrl);
-
             set({ images: dataWithUrl, loading: false })
 
             await storeImages(dataWithUrl)

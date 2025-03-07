@@ -93,8 +93,8 @@ export const renderPricingButton = ({
     return (
       <Button
         fullWidth
-        size="sm"
         color={isCurrentPlan ? "default" : "primary"}
+        size="sm"
         startContent={
           <Icon
             className="text-xs"
