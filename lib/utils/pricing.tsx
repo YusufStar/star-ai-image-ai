@@ -67,7 +67,7 @@ export const renderPricingButton = ({
           }
         }}
       >
-        {isPro ? "Get Started" : isEnterprise ? "Contact Sales" : "Choose Plan"}
+        {isPro ? "Get Started" : isEnterprise ? "Choose Plan" : "Choose Plan"}
       </Button>
     );
   }

@@ -1,5 +1,4 @@
 import React from "react";
-import { redirect } from "next/navigation";
 
 import ClientWrapper from "./_components/ClientWrapper";
 
@@ -12,10 +11,6 @@ const DashboardPage = async () => {
     getUser(supabase),
     getProducts(supabase),
   ]);
-
-  if (user) {
-    redirect("/dashboard");
-  }
 
   return (
     <ClientWrapper products={products || []} />

@@ -11,6 +11,7 @@ import { getUser } from "./auth-actions";
 import { ImageGenerationFormSchema } from "@/app/dashboard/generate-image/_components/ConfigurationsForm";
 import { createClient } from "@/lib/supabase/server";
 import { Database } from "@/database.type";
+import { getCredits } from "./credit-actions";
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
@@ -30,6 +31,15 @@ export async function generateImage(
     if (!process.env.REPLICATE_API_TOKEN) {
       return {
         error: "Replicate API token is not set",
+        success: false,
+        data: null,
+      };
+    }
+
+    const {data: credits} = await getCredits()
+    if (!credits?.image_generation_count || credits.image_generation_count <= 0) {
+      return {
+        error: "You have no credits left",
         success: false,
         data: null,
       };
@@ -59,6 +69,7 @@ export async function generateImage(
     // Process each output item to add width and height
     const processedOutput = await Promise.all(
       (output as string[]).map(async (url) => {
+        console
         const arrayBuffer = await imgUrlToBlog(url);
         const { width, height } = imageMeta(new Uint8Array(arrayBuffer));
 
@@ -111,11 +122,14 @@ export async function storeImages(data: storeImageInput[]) {
     };
   }
 
+  console.log("All images to be stored:", data);
+
   const uploadResults = [];
 
   for (const img of data) {
     const arrayBuffer = await imgUrlToBlog(img.url);
     const { width, height, type } = imageMeta(new Uint8Array(arrayBuffer));
+    console.log("Processing image:", img);
 
     const fileName = `image_${randomUUID()}.${type}`;
     const filePath = `${user.id}/${fileName}`;
@@ -169,14 +183,21 @@ export async function storeImages(data: storeImageInput[]) {
         success: false,
         data: dbData || null,
       });
+    } else {
+      uploadResults.push({
+        fileName,
+        error: null,
+        success: true,
+        data: dbData || null,
+      });
     }
-
-    return {
-      error: null,
-      success: true,
-      data: { results: uploadResults },
-    };
   }
+
+  return {
+    error: null,
+    success: true,
+    data: { results: uploadResults },
+  };
 }
 
 export async function getImages(limit?: number) {

@@ -98,6 +98,18 @@ export async function POST(req: Request) {
         .eq("model_id", modelName);
     }
 
+    const {data: userCredits, error: userCreditsError} = await supabaseAdmin.from("credits").select("model_training_count").eq("user_id", userId).single();
+
+    if (userCreditsError) {
+      throw new Error("Failed to get user credits");
+    }
+
+    if (userCredits?.model_training_count && userCredits.model_training_count > 0) {
+      await supabaseAdmin.from("credits").update({
+        model_training_count: userCredits.model_training_count - 1,
+      }).eq("user_id", userId).single();
+    }
+
     await supabaseAdmin.storage.from("training_data").remove([`${fileName}`]);
 
     return NextResponse.json({ success: true }, { status: 201 });

@@ -11,6 +11,26 @@ const replicate = new Replicate({
 const WEBHOOK_URL =
   process.env.SITE_URL ?? "https://4805-213-14-147-186.ngrok-free.app";
 
+const validateUserCredits = async (userId: string) => {
+  const { data: userCredits, error } = await supabaseAdmin
+    .from("credits")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    throw new Error("Failed to validate user credits");
+  }
+
+  const credits = userCredits?.model_training_count || 0;
+
+  if (credits <= 0) {
+    throw new Error("You have no credits left");
+  }
+
+  return credits;
+};
+
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.REPLICATE_API_TOKEN) {
@@ -45,6 +65,9 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const oldCredits = await validateUserCredits(user.id);
+
     const fileName = input.fileKey.replace("training_data/", "");
     const { data: fileData, error } = await supabaseAdmin.storage
       .from("training_data")
@@ -78,7 +101,7 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    const { data: modelData, error: modelError } = await supabaseAdmin
+    await supabaseAdmin
       .from("models")
       .insert({
         model_id: modelId,
@@ -90,6 +113,10 @@ export async function POST(req: NextRequest) {
         training_steps: 1200,
         training_id: training.id,
       });
+
+    await supabaseAdmin.from("credits").update({
+      model_training_count: oldCredits - 1,
+    }).eq("user_id", user.id);
 
     return NextResponse.json(
       {

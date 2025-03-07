@@ -466,7 +466,7 @@ export default function PlanSummary({
               transition={{ delay: 0.4 }}
             >
               <h4 className="text-sm font-medium mb-3">Plan Features</h4>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {typeof subscriptionProduct.metadata === "object" &&
                   !Array.isArray(subscriptionProduct.metadata) &&
                   Object.entries(
@@ -493,7 +493,7 @@ export default function PlanSummary({
           )}
         </CardBody>
 
-        <CardFooter className="flex justify-between items-center border-t border-default-200 px-6 py-4 bg-default-50">
+        <CardFooter className="flex flex-col-reverse gap-2 sm:flex-row justify-between items-center border-t border-default-200 px-6 py-4 bg-default-50">
           <div className="flex items-center gap-2">
             <Icon
               className={`text-sm ${

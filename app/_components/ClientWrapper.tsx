@@ -12,6 +12,7 @@ import Contact from "./Contact";
 import Pricing from "./Pricing";
 
 import { Tables } from "@/database.type";
+import Logo from "../login/_components/Logo";
 
 type Product = Tables<"products">;
 type Price = Tables<"prices">;
@@ -121,25 +122,9 @@ export default function ClientWrapper({ products }: ClientWrapperProps) {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row justify-between items-center pt-4 sm:pt-6 border-t border-border">
-            <div className="flex items-center gap-2 mb-4 sm:mb-0">
-              <div className="p-1 rounded-full bg-primary text-white">
-                <svg
-                  fill="none"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </div>
-              <p className="font-bold text-sm sm:text-base">STAR AI</p>
-            </div>
-            <p className="text-foreground-600 text-xs sm:text-sm">
-              © 2023 STAR AI. All rights reserved.
+            <Logo />
+            <p className="text-foreground-600 text-xs sm:text-sm text-nowrap">
+              © {new Date().getFullYear()} STAR AI. All rights reserved.
             </p>
             <div className="flex gap-3 mt-4 sm:mt-0">
               {[

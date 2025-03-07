@@ -206,7 +206,12 @@ const PricingSheet = ({ subscription, user, products }: PlanSummaryProps) => {
 
             <div className="grid grid-cols-1 gap-4">
               {products &&
-                products.map((product, index) => {
+                products
+                  .sort((a, b) => {
+                    const order = { "Hobby": 1, "Pro": 2, "Enterprise": 3 };
+                    return (order[a.name as keyof typeof order] || 99) - (order[b.name as keyof typeof order] || 99);
+                  })
+                  .map((product, index) => {
                   const isPro = product.name === "Pro";
                   const isEnterprise = product.name === "Enterprise";
                   const priceInfo = getPrice(product);

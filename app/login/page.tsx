@@ -3,8 +3,16 @@ import { Suspense } from "react";
 import Logo from "./_components/Logo";
 import AuthForm from "./_components/AuthForm";
 import AuthenticationSidebar from "./_components/RightSide";
+import { getUser } from "@/actions/auth-actions";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const { data: user } = await getUser();
+
+  if (user) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="relative flex flex-col lg:flex-row h-screen w-full">
       {/* Auth Form */}
@@ -12,7 +20,9 @@ export default function LoginPage() {
         <Logo />
 
         <div className="flex-1 flex items-center justify-center py-4">
-          <Suspense fallback={<div className="w-full text-center">Loading...</div>}>
+          <Suspense
+            fallback={<div className="w-full text-center">Loading...</div>}
+          >
             <AuthForm />
           </Suspense>
         </div>
