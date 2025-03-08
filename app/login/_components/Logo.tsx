@@ -14,7 +14,7 @@ export default function Logo() {
       </div>
       <motion.p
         animate={{ opacity: 1, x: 0 }}
-        className="font-bold text-inherit hidden xl:block"
+        className="font-bold text-inherit"
         initial={{ opacity: 0, x: -10 }}
         transition={{ duration: 0.5 }}
       >

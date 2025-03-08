@@ -10,8 +10,7 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 
-import { login, signup } from "@/actions/auth-actions";
-
+import { forgotPassword, login, signup } from "@/actions/auth-actions";
 
 interface LoginForm {
   email: string;
@@ -33,12 +32,18 @@ interface ForgotPasswordForm {
 
 export default function AuthForm() {
   const [isVisible, setIsVisible] = React.useState(false);
-  const [mode, setMode] = React.useState<"login" | "register" | "forgot-password">("login");
+  const [mode, setMode] = React.useState<
+    "login" | "register" | "forgot-password"
+  >("login");
   const searchParams = useSearchParams();
   const router = useRouter();
 
   // Form states
-  const [loginForm, setLoginForm] = React.useState<LoginForm>({ email: "", password: "", remember: false });
+  const [loginForm, setLoginForm] = React.useState<LoginForm>({
+    email: "",
+    password: "",
+    remember: false,
+  });
   const [registerForm, setRegisterForm] = React.useState<RegisterForm>({
     email: "",
     password: "",
@@ -46,20 +51,32 @@ export default function AuthForm() {
     terms: false,
     full_name: "",
   });
-  const [forgotPasswordForm, setForgotPasswordForm] = React.useState<ForgotPasswordForm>({ email: "" });
-  const [registerLoading, setRegisterLoading] = useState<boolean>(false)
-  const [loginLoading, setLoginLoading] = useState<boolean>(false)
-
+  const [forgotPasswordForm, setForgotPasswordForm] =
+    React.useState<ForgotPasswordForm>({ email: "" });
+  const [registerLoading, setRegisterLoading] = useState<boolean>(false);
+  const [loginLoading, setLoginLoading] = useState<boolean>(false);
+  const [forgotPasswordLoading, setForgotPasswordLoading] =
+    useState<boolean>(false);
   React.useEffect(() => {
     if (!searchParams) return;
-    
+
     const currentMode = searchParams.get("mode");
 
-    if (currentMode === "login" || currentMode === "register" || currentMode === "forgot-password") {
+    if (
+      currentMode === "login" ||
+      currentMode === "register" ||
+      currentMode === "forgot-password"
+    ) {
       setMode(currentMode);
       // Reset forms when mode changes
       setLoginForm({ email: "", password: "", remember: false });
-      setRegisterForm({ email: "", password: "", confirmPassword: "", terms: false, full_name: "" });
+      setRegisterForm({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        terms: false,
+        full_name: "",
+      });
       setForgotPasswordForm({ email: "" });
     } else {
       router.push("?mode=login");
@@ -71,7 +88,8 @@ export default function AuthForm() {
   // Validation functions
   const getEmailError = (email: string) => {
     if (!email) return "Email is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Invalid email format";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return "Invalid email format";
 
     return null;
   };
@@ -97,13 +115,16 @@ export default function AuthForm() {
 
     // Check for special characters
     if (!/[!@#$%^&*()_+\-=[\]{};:"|,.<>/?`~]/.test(password)) {
-      return "Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:\"<>,.?`~)";
+      return 'Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:"<>,.?`~)';
     }
 
     return null;
   };
 
-  const getConfirmPasswordError = (password: string, confirmPassword: string) => {
+  const getConfirmPasswordError = (
+    password: string,
+    confirmPassword: string
+  ) => {
     if (!confirmPassword) return "Please confirm your password";
     if (password !== confirmPassword) return "Passwords do not match";
 
@@ -126,53 +147,64 @@ export default function AuthForm() {
       if (emailError) {
         addToast({
           title: "Email Error!",
-          description: emailError
-        })
+          description: emailError,
+        });
       }
 
       if (passwordError) {
         addToast({
           title: "Password Error!",
-          description: passwordError
-        })
+          description: passwordError,
+        });
       }
 
-      return
+      return;
     }
 
     const formData = new FormData(event.currentTarget);
 
-    setLoginLoading(true)
-    const { success, error } = await login(formData)
+    setLoginLoading(true);
+    const { success, error } = await login(formData);
 
     if (!success) {
       addToast({
         title: "Signed in failed!",
         description: String(error),
-        color: "danger"
-      })
+        color: "danger",
+      });
     } else {
       addToast({
         title: "Signed in successfully!",
         description: "Welcome to the StarAI.",
-        color: "success"
-      })
+        color: "success",
+      });
 
-      redirect("/dashboard")
+      redirect("/dashboard");
     }
 
-    setLoginLoading(false)
+    setLoginLoading(false);
   };
 
-  const handleRegisterSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     const emailError = getEmailError(registerForm.email);
     const passwordError = getPasswordError(registerForm.password);
-    const confirmPasswordError = getConfirmPasswordError(registerForm.password, registerForm.confirmPassword);
+    const confirmPasswordError = getConfirmPasswordError(
+      registerForm.password,
+      registerForm.confirmPassword
+    );
     const fullNameError = getFullNameError(registerForm.full_name);
 
     // Check for validation errors
-    if (emailError || passwordError || confirmPasswordError || fullNameError || !registerForm.terms) {
+    if (
+      emailError ||
+      passwordError ||
+      confirmPasswordError ||
+      fullNameError ||
+      !registerForm.terms
+    ) {
       if (emailError) {
         addToast({
           title: "Email Error!",
@@ -219,38 +251,78 @@ export default function AuthForm() {
     // If no errors, proceed with signup
     const formData = new FormData(event.currentTarget);
 
-    setRegisterLoading(true)
-    const { success, error } = await signup(formData)
+    setRegisterLoading(true);
+    const { success, error } = await signup(formData);
 
     if (!success) {
       addToast({
         title: "Signed up failed!",
         description: String(error),
-        color: "danger"
-      })
+        color: "danger",
+      });
     } else {
       addToast({
         title: "Signed up successfully!",
         description: "Please confirm your email address.",
-        color: "success"
-      })
+        color: "success",
+      });
 
-      redirect("?mode=login")
+      redirect("?mode=login");
     }
 
-    setRegisterLoading(false)
+    setRegisterLoading(false);
   };
 
-  const handleForgotPasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleForgotPasswordSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     const emailError = getEmailError(forgotPasswordForm.email);
 
+    setForgotPasswordLoading(true);
+
+    if (emailError) {
+      addToast({
+        title: "Email Error!",
+        description: emailError,
+        color: "danger",
+      });
+      setForgotPasswordLoading(false);
+      return;
+    }
+
+    try {
+      const { error, success } = await forgotPassword(forgotPasswordForm.email);
+
+      if (!success) {
+        addToast({
+          title: "Error",
+          description: error,
+          color: "danger",
+        });
+      } else {
+        addToast({
+          title: "Success",
+          description:
+            "Password reset email has been sent to your email address",
+          color: "success",
+        });
+      }
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: "There was an error sending the password reset email",
+        color: "danger",
+      });
+    } finally {
+      setForgotPasswordLoading(false);
+    }
   };
 
   const formVariants = {
     initial: { opacity: 0, x: -20 },
     animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: 20 }
+    exit: { opacity: 0, x: 20 },
   };
 
   return (
@@ -270,7 +342,7 @@ export default function AuthForm() {
               flexDirection: "column",
               alignItems: "center",
               gap: "1rem",
-              padding: "1rem"
+              padding: "1rem",
             }}
             transition={{ duration: 0.3 }}
             variants={formVariants}
@@ -283,9 +355,15 @@ export default function AuthForm() {
               loading={loginLoading}
               password={loginForm.password}
               remember={loginForm.remember}
-              onEmailChange={(value) => setLoginForm({ ...loginForm, email: value })}
-              onPasswordChange={(value) => setLoginForm({ ...loginForm, password: value })}
-              onRememberChange={(value) => setLoginForm({ ...loginForm, remember: value })}
+              onEmailChange={(value) =>
+                setLoginForm({ ...loginForm, email: value })
+              }
+              onPasswordChange={(value) =>
+                setLoginForm({ ...loginForm, password: value })
+              }
+              onRememberChange={(value) =>
+                setLoginForm({ ...loginForm, remember: value })
+              }
               onSubmit={handleLoginSubmit}
               onToggleVisibility={toggleVisibility}
             />
@@ -304,7 +382,7 @@ export default function AuthForm() {
               flexDirection: "column",
               alignItems: "center",
               gap: "1rem",
-              padding: "1rem"
+              padding: "1rem",
             }}
             transition={{ duration: 0.3 }}
             variants={formVariants}
@@ -321,12 +399,22 @@ export default function AuthForm() {
               loading={registerLoading}
               password={registerForm.password}
               terms={registerForm.terms}
-              onConfirmPasswordChange={(value) => setRegisterForm({ ...registerForm, confirmPassword: value })}
-              onEmailChange={(value) => setRegisterForm({ ...registerForm, email: value })}
-              onFullNameChange={(value) => setRegisterForm({ ...registerForm, full_name: value })}
-              onPasswordChange={(value) => setRegisterForm({ ...registerForm, password: value })}
+              onConfirmPasswordChange={(value) =>
+                setRegisterForm({ ...registerForm, confirmPassword: value })
+              }
+              onEmailChange={(value) =>
+                setRegisterForm({ ...registerForm, email: value })
+              }
+              onFullNameChange={(value) =>
+                setRegisterForm({ ...registerForm, full_name: value })
+              }
+              onPasswordChange={(value) =>
+                setRegisterForm({ ...registerForm, password: value })
+              }
               onSubmit={handleRegisterSubmit}
-              onTermsChange={(value) => setRegisterForm({ ...registerForm, terms: value })}
+              onTermsChange={(value) =>
+                setRegisterForm({ ...registerForm, terms: value })
+              }
               onToggleVisibility={toggleVisibility}
             />
           </motion.div>
@@ -341,10 +429,10 @@ export default function AuthForm() {
               display: "flex",
               width: "100%",
               maxWidth: "24rem",
-              flexDirection: "column", 
+              flexDirection: "column",
               alignItems: "center",
               gap: "1rem",
-              padding: "1rem"
+              padding: "1rem",
             }}
             transition={{ duration: 0.3 }}
             variants={formVariants}
@@ -352,7 +440,10 @@ export default function AuthForm() {
             <ForgotPasswordForm
               email={forgotPasswordForm.email}
               getEmailError={getEmailError}
-              onEmailChange={(value) => setForgotPasswordForm({ ...forgotPasswordForm, email: value })}
+              loading={forgotPasswordLoading}
+              onEmailChange={(value) =>
+                setForgotPasswordForm({ ...forgotPasswordForm, email: value })
+              }
               onSubmit={handleForgotPasswordSubmit}
             />
           </motion.div>
@@ -360,4 +451,4 @@ export default function AuthForm() {
       </AnimatePresence>
     </div>
   );
-} 
+}

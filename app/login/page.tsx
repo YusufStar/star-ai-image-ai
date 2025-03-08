@@ -8,7 +8,9 @@ import AuthenticationSidebar from "./_components/RightSide";
 import { getUser } from "@/actions/auth-actions";
 
 export default async function LoginPage() {
-  const { data: user } = await getUser();
+  const {
+    data: { user },
+  } = await getUser();
 
   if (user) {
     redirect("/dashboard");

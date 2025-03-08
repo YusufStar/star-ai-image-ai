@@ -8,6 +8,7 @@ interface ForgotPasswordFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onEmailChange: (value: string) => void;
   getEmailError: (email: string) => string | null;
+  loading: boolean;
 }
 
 export default function ForgotPasswordForm({
@@ -15,12 +16,15 @@ export default function ForgotPasswordForm({
   onSubmit,
   onEmailChange,
   getEmailError,
+  loading,
 }: ForgotPasswordFormProps) {
   return (
     <>
       <div className="w-full text-left">
         <p className="pb-2 text-xl font-medium sm:text-2xl">Reset Password</p>
-        <p className="text-small text-default-500">Enter your email to reset your password</p>
+        <p className="text-small text-default-500">
+          Enter your email to reset your password
+        </p>
       </div>
 
       <Form
@@ -32,7 +36,7 @@ export default function ForgotPasswordForm({
           isRequired
           classNames={{
             label: "text-sm sm:text-base",
-            input: "text-sm sm:text-base"
+            input: "text-sm sm:text-base",
           }}
           errorMessage={getEmailError(email)}
           isInvalid={getEmailError(email) !== null}
@@ -44,7 +48,12 @@ export default function ForgotPasswordForm({
           variant="underlined"
           onChange={(e) => onEmailChange(e.target.value)}
         />
-        <Button className="mt-2 w-full h-10 sm:h-11 text-sm sm:text-base" color="primary" type="submit">
+        <Button
+          className="mt-2 w-full h-10 sm:h-11 text-sm sm:text-base"
+          color="primary"
+          type="submit"
+          isLoading={loading}
+        >
           Send Reset Link
         </Button>
       </Form>
@@ -57,4 +66,4 @@ export default function ForgotPasswordForm({
       </p>
     </>
   );
-} 
+}

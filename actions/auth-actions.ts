@@ -107,3 +107,35 @@ export async function updatePassword() {
     };
   }
 }
+
+export async function forgotPassword(email: string) {
+  const supabase = await createClient();
+
+  const { data: forgotPasswordData, error: forgotPasswordError } =
+    await supabase.auth.resetPasswordForEmail(email);
+
+  return {
+    error:
+      forgotPasswordError?.message ||
+      "There was an error sending the password reset email!",
+    success: !forgotPasswordError,
+    data: forgotPasswordData || null,
+  };
+}
+
+export async function changePassword(values: { password: string }) {
+  const supabase = await createClient();
+
+  const { data: updatePasswordData, error: updatePasswordError } =
+    await supabase.auth.updateUser({
+      password: values.password,
+    });
+
+  return {
+    error:
+      updatePasswordError?.message ||
+      "There was an error updating the password!",
+    success: !updatePasswordError,
+    data: updatePasswordData || null,
+  };
+}
