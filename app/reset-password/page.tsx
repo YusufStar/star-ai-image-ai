@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
-import ChangePasswordForm from "./_components/ChangePasswordForm";
 import AuthenticationSidebar from "../login/_components/RightSide";
 import Logo from "../login/_components/Logo";
+
+import ChangePasswordForm from "./_components/ChangePasswordForm";
 
 import { getUser } from "@/actions/auth-actions";
 

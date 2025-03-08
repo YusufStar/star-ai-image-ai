@@ -1,15 +1,12 @@
 "use client";
 
-import { updateUser } from "@/actions/auth-actions";
 import { 
   addToast, 
   Button, 
   Card, 
   CardBody, 
   CardHeader, 
-  Divider, 
-  Input, 
-  Spinner 
+  Input 
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@supabase/supabase-js";
@@ -18,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
+
+import { updateUser } from "@/actions/auth-actions";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -92,12 +91,18 @@ const AccountForm = ({ user }: AccountFormProps) => {
             </p>
           </div>
 
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <Input
+                isRequired
+                classNames={{
+                  inputWrapper: "bg-default-50 border-default-200 shadow-sm hover:border-primary/70 group-data-[focus=true]:border-primary",
+                  label: "text-default-700 font-medium",
+                  input: "text-sm"
+                }}
+                errorMessage={form.formState.errors.fullName?.message}
                 label="Full Name"
                 placeholder="Enter your full name"
-                variant="bordered"
                 radius="md"
                 size="md"
                 startContent={
@@ -106,20 +111,20 @@ const AccountForm = ({ user }: AccountFormProps) => {
                     icon="solar:user-linear"
                   />
                 }
-                classNames={{
-                  inputWrapper: "bg-default-50 border-default-200 shadow-sm hover:border-primary/70 group-data-[focus=true]:border-primary",
-                  label: "text-default-700 font-medium",
-                  input: "text-sm"
-                }}
-                isRequired
-                errorMessage={form.formState.errors.fullName?.message}
+                variant="bordered"
                 {...form.register("fullName")}
               />
               
               <Input
+                isDisabled
+                classNames={{
+                  inputWrapper: "bg-default-50 border-default-200 shadow-sm",
+                  label: "text-default-700 font-medium",
+                  input: "text-sm"
+                }}
+                description="Email cannot be changed after registration"
                 label="Email Address"
                 placeholder="Enter your email"
-                variant="bordered"
                 radius="md"
                 size="md"
                 startContent={
@@ -128,30 +133,24 @@ const AccountForm = ({ user }: AccountFormProps) => {
                     icon="solar:letter-linear"
                   />
                 }
-                classNames={{
-                  inputWrapper: "bg-default-50 border-default-200 shadow-sm",
-                  label: "text-default-700 font-medium",
-                  input: "text-sm"
-                }}
-                isDisabled
-                description="Email cannot be changed after registration"
+                variant="bordered"
                 {...form.register("email")}
               />
             </div>
             
             <div className="flex justify-end pt-2">
               <Button 
-                type="submit" 
+                className="font-medium shadow-sm" 
                 color="primary"
-                className="font-medium shadow-sm"
+                isLoading={isLoading}
+                size="sm"
                 startContent={!isLoading && 
                   <Icon
                     className="text-lg"
                     icon="solar:pen-bold-duotone"
                   />
                 }
-                isLoading={isLoading}
-                size="sm"
+                type="submit"
               >
                 Save Changes
               </Button>

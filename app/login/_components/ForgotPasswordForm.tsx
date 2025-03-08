@@ -51,8 +51,8 @@ export default function ForgotPasswordForm({
         <Button
           className="mt-2 w-full h-10 sm:h-11 text-sm sm:text-base"
           color="primary"
-          type="submit"
           isLoading={loading}
+          type="submit"
         >
           Send Reset Link
         </Button>

@@ -100,6 +100,7 @@ export async function updatePassword() {
     };
   } catch (error) {
     console.error(error);
+
     return {
       error: "There was an error updating the password!",
       success: false,

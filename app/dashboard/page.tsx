@@ -1,7 +1,9 @@
+import React from "react";
+
+import { StatsCard } from "./_components/StatsCard";
+
 import { getUser } from "@/actions/auth-actions";
 import { PageHeader } from "@/components/header";
-import React from "react";
-import { StatsCard } from "./_components/StatsCard";
 import { fetchModels } from "@/actions/model-actions";
 import { getCredits } from "@/actions/credit-actions";
 import { getImages } from "@/actions/image-actions";
@@ -25,16 +27,16 @@ async function page() {
   return (
     <section className="custom-container mx-auto flex-1">
       <PageHeader
-        title="Dashboard"
         subtitle={`Welcome back, ${user?.user_metadata.full_name}`}
+        title="Dashboard"
       />
 
       <StatsCard
-        models={enhancedModels}
-        images={images?.slice(0, 6) ?? []}
-        imageCount={imageCount}
-        modelCount={modelsCount}
         credits={credits}
+        imageCount={imageCount}
+        images={images?.slice(0, 6) ?? []}
+        modelCount={modelsCount}
+        models={enhancedModels}
       />
     </section>
   );

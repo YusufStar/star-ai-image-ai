@@ -6,12 +6,12 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Spinner,
 } from "@heroui/react";
 import { useState } from "react";
-import { updatePassword } from "@/actions/auth-actions";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
+
+import { updatePassword } from "@/actions/auth-actions";
 
 const PasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -65,22 +65,22 @@ const PasswordForm = () => {
         <CardBody className="px-6 py-5">
           <div className="mb-6">
             <p className="text-sm text-default-500">
-              To change your password, click the button below. We'll send a password reset link to your email address.
+              To change your password, click the button below. We&apos;ll send a password reset link to your email address.
             </p>
           </div>
 
           <div className="flex justify-start pt-2">
             <Button 
-              color="primary" 
-              className="font-medium shadow-sm"
+              className="font-medium shadow-sm" 
+              color="primary"
+              isLoading={isLoading}
+              size="sm"
               startContent={!isLoading && 
                 <Icon
                   className="text-lg"
                   icon="solar:mail-linear"
                 />
               }
-              isLoading={isLoading}
-              size="sm"
               onClick={handleResetPassword}
             >
               Send Reset Password Email

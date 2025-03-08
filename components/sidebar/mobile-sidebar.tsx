@@ -12,14 +12,14 @@ import {
   Skeleton,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useRouter, usePathname } from "next/navigation";
+import { Selection } from "@heroui/react";
 
 import Sidebar from "./sidebar";
 import { sectionItems } from "./sidebar-items";
 
 import { Logo } from "@/components/icons";
 import { logout } from "@/actions/auth-actions";
-import { useRouter, usePathname } from "next/navigation";
-import { Selection } from "@heroui/react";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -73,9 +73,11 @@ export default function MobileSidebar({
         }
         if (item.items) {
           const found = findItemByKey(item.items);
+
           if (found) return found;
         }
       }
+
       return null;
     };
 

@@ -5,9 +5,9 @@ export default async function Loading() {
     <div className="flex items-center justify-center h-screen">
       <div className="flex items-center justify-center gap-2">
         <div className={styles.spinner}>
-          <div className={`${styles.spinnerRing} ${styles.spinnerRing1}`}></div>
-          <div className={`${styles.spinnerRing} ${styles.spinnerRing2}`}></div>
-          <div className={`${styles.spinnerRing} ${styles.spinnerRing3}`}></div>
+          <div className={`${styles.spinnerRing} ${styles.spinnerRing1}`} />
+          <div className={`${styles.spinnerRing} ${styles.spinnerRing2}`} />
+          <div className={`${styles.spinnerRing} ${styles.spinnerRing3}`} />
         </div>
         <p className="text-default-500">Loading...</p>
       </div>

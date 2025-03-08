@@ -479,11 +479,11 @@ export default function PlanSummary({
 
                 <div className="flex items-end">
                   <Progress
+                    isDisabled
                     aria-label="Music generation credits"
                     className="w-full h-2"
                     color="default"
                     value={0}
-                    isDisabled
                   />
                 </div>
                 <div className="flex items-center gap-1.5 mt-1">
@@ -527,11 +527,11 @@ export default function PlanSummary({
 
                 <div className="flex items-end">
                   <Progress
+                    isDisabled
                     aria-label="Video generation credits"
                     className="w-full h-2"
                     color="default"
                     value={0}
-                    isDisabled
                   />
                 </div>
                 <div className="flex items-center gap-1.5 mt-1">

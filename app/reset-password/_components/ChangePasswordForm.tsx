@@ -66,11 +66,13 @@ export default function ChangePasswordForm() {
   const getPasswordError = (password: string) => {
     try {
       passwordSchema.parse(password);
+
       return null;
     } catch (error) {
       if (error instanceof z.ZodError) {
         return error.errors[0].message;
       }
+
       return "Invalid password";
     }
   };
@@ -88,6 +90,7 @@ export default function ChangePasswordForm() {
       if (error instanceof z.ZodError) {
         return error.errors[0].message;
       }
+
       return "Invalid password";
     }
   };
@@ -155,12 +158,6 @@ export default function ChangePasswordForm() {
             base: "w-full",
             inputWrapper: "bg-default-100",
           }}
-          label="New Password"
-          placeholder="Enter your new password"
-          type={isPasswordVisible ? "text" : "password"}
-          value={password}
-          onValueChange={setPassword}
-          errorMessage={getPasswordError(password)}
           endContent={
             <button
               className="focus:outline-none"
@@ -169,17 +166,23 @@ export default function ChangePasswordForm() {
             >
               {isPasswordVisible ? (
                 <Icon
-                  icon="solar:eye-closed-linear"
                   className="text-2xl text-default-400"
+                  icon="solar:eye-closed-linear"
                 />
               ) : (
                 <Icon
-                  icon="solar:eye-bold"
                   className="text-2xl text-default-400"
+                  icon="solar:eye-bold"
                 />
               )}
             </button>
           }
+          errorMessage={getPasswordError(password)}
+          label="New Password"
+          placeholder="Enter your new password"
+          type={isPasswordVisible ? "text" : "password"}
+          value={password}
+          onValueChange={setPassword}
         />
 
         <Input
@@ -188,12 +191,6 @@ export default function ChangePasswordForm() {
             base: "w-full",
             inputWrapper: "bg-default-100",
           }}
-          label="Confirm Password"
-          placeholder="Confirm your new password"
-          type={isConfirmPasswordVisible ? "text" : "password"}
-          value={confirmPassword}
-          onValueChange={setConfirmPassword}
-          errorMessage={getConfirmPasswordError(confirmPassword)}
           endContent={
             <button
               className="focus:outline-none"
@@ -202,25 +199,31 @@ export default function ChangePasswordForm() {
             >
               {isConfirmPasswordVisible ? (
                 <Icon
-                  icon="solar:eye-closed-linear"
                   className="text-2xl text-default-400"
+                  icon="solar:eye-closed-linear"
                 />
               ) : (
                 <Icon
-                  icon="solar:eye-bold"
                   className="text-2xl text-default-400"
+                  icon="solar:eye-bold"
                 />
               )}
             </button>
           }
+          errorMessage={getConfirmPasswordError(confirmPassword)}
+          label="Confirm Password"
+          placeholder="Confirm your new password"
+          type={isConfirmPasswordVisible ? "text" : "password"}
+          value={confirmPassword}
+          onValueChange={setConfirmPassword}
         />
 
         <Button
           className="w-full"
           color="primary"
-          type="submit"
-          isLoading={loading}
           isDisabled={loading}
+          isLoading={loading}
+          type="submit"
         >
           Reset Password
         </Button>
@@ -228,10 +231,10 @@ export default function ChangePasswordForm() {
         <div className="flex justify-center pt-2">
           <Button
             as="a"
+            className="font-medium"
+            color="primary"
             href="/login"
             variant="light"
-            color="primary"
-            className="font-medium"
           >
             Back to Login
           </Button>

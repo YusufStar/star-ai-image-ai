@@ -57,6 +57,7 @@ export default function AuthForm() {
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [forgotPasswordLoading, setForgotPasswordLoading] =
     useState<boolean>(false);
+
   React.useEffect(() => {
     if (!searchParams) return;
 
@@ -288,6 +289,7 @@ export default function AuthForm() {
         color: "danger",
       });
       setForgotPasswordLoading(false);
+
       return;
     }
 

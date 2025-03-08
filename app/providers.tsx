@@ -35,9 +35,9 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <HeroUIProvider navigate={router.push}>
       <NextThemesProvider
         {...themeProps}
+        enableSystem
         attribute="class"
         defaultTheme="system"
-        enableSystem
       >
         {mounted ? (
           children

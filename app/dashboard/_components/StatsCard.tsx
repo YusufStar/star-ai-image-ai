@@ -1,12 +1,13 @@
 "use client";
 
-import { Database, Tables } from "@/database.type";
-import { Card, CardBody, CardFooter, Button } from "@heroui/react";
+import { Card, CardBody, Button } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
+import { Database, Tables } from "@/database.type";
 
 // Define a type that extends the generated_images table with the url property
 type ImageWithUrl = Tables<"generated_images"> & {
@@ -88,8 +89,8 @@ export function StatsCard({
               <p className="text-default-500 text-sm">Total Images</p>
               <div className="p-2 rounded-full bg-primary/10">
                 <Icon
-                  icon="solar:gallery-bold"
                   className="text-primary w-5 h-5"
+                  icon="solar:gallery-bold"
                 />
               </div>
             </div>
@@ -107,8 +108,8 @@ export function StatsCard({
               <p className="text-default-500 text-sm">Total Models</p>
               <div className="p-2 rounded-full bg-primary/10">
                 <Icon
-                  icon="solar:server-bold"
                   className="text-primary w-5 h-5"
+                  icon="solar:server-bold"
                 />
               </div>
             </div>
@@ -126,8 +127,8 @@ export function StatsCard({
               <p className="text-default-500 text-sm">Image Credits</p>
               <div className="p-2 rounded-full bg-primary/10">
                 <Icon
-                  icon="solar:dollar-bold"
                   className="text-primary w-5 h-5"
+                  icon="solar:dollar-bold"
                 />
               </div>
             </div>
@@ -141,7 +142,7 @@ export function StatsCard({
                 style={{
                   width: `${Math.min(100, ((credits?.image_generation_count || 0) / (credits?.max_image_generation_count || 1)) * 100)}%`,
                 }}
-              ></div>
+               />
             </div>
             <p className="text-xs text-default-500">
               Available credits for image generation
@@ -156,8 +157,8 @@ export function StatsCard({
               <p className="text-default-500 text-sm">Training Credits</p>
               <div className="p-2 rounded-full bg-primary/10">
                 <Icon
-                  icon="solar:magic-stick-bold"
                   className="text-primary w-5 h-5"
+                  icon="solar:magic-stick-bold"
                 />
               </div>
             </div>
@@ -171,7 +172,7 @@ export function StatsCard({
                 style={{
                   width: `${Math.min(100, ((credits?.model_training_count || 0) / (credits?.max_model_training_count || 1)) * 100)}%`,
                 }}
-              ></div>
+               />
             </div>
             <p className="text-xs text-default-500">
               Available credits for model training
@@ -193,18 +194,18 @@ export function StatsCard({
                 <Link href="/dashboard/my-images">
                   <Button
                     color="primary"
-                    variant="light"
-                    size="sm"
                     endContent={
-                      <Icon icon="solar:arrow-right-linear" className="ml-1" />
+                      <Icon className="ml-1" icon="solar:arrow-right-linear" />
                     }
+                    size="sm"
+                    variant="light"
                   >
                     View All
                   </Button>
                 </Link>
               </div>
               <div className="relative">
-                <div className="overflow-hidden" ref={emblaRef}>
+                <div ref={emblaRef} className="overflow-hidden">
                   <div className="flex gap-4 md:gap-5">
                     {images.length > 0 ? (
                       images.map((image, index) => (
@@ -215,19 +216,19 @@ export function StatsCard({
                           <div className="relative aspect-square rounded-lg overflow-hidden bg-default-100 shadow-sm">
                             {image.url ? (
                               <Image
-                                src={image.url}
-                                alt={`Generated image ${index + 1}`}
                                 fill
-                                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                                alt={`Generated image ${index + 1}`}
                                 className="object-cover"
-                                style={{ objectFit: "cover" }}
                                 priority={index < 3}
+                                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                                src={image.url}
+                                style={{ objectFit: "cover" }}
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
                                 <Icon
-                                  icon="solar:gallery-broken"
                                   className="w-10 h-10 text-default-300"
+                                  icon="solar:gallery-broken"
                                 />
                               </div>
                             )}
@@ -248,15 +249,15 @@ export function StatsCard({
                     ) : (
                       <div className="w-full p-8 text-center">
                         <Icon
-                          icon="solar:gallery-broken"
                           className="w-12 h-12 text-default-300 mx-auto mb-2"
+                          icon="solar:gallery-broken"
                         />
                         <p className="text-default-500">
                           No images generated yet
                         </p>
                         <Link
-                          href="/dashboard/generate-image"
                           className="mt-4 inline-block"
+                          href="/dashboard/generate-image"
                         >
                           <Button color="primary" size="sm">
                             Generate Your First Image
@@ -269,22 +270,22 @@ export function StatsCard({
                 {images.length > 0 && (
                   <>
                     <button
-                      onClick={scrollPrev}
                       className={`absolute top-1/2 left-2 -translate-y-1/2 bg-white/80 dark:bg-black/50 rounded-full p-2 shadow-md z-10 ${
                         !canScrollPrev ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       disabled={!canScrollPrev}
+                      onClick={scrollPrev}
                     >
-                      <Icon icon="solar:arrow-left-bold" className="w-5 h-5" />
+                      <Icon className="w-5 h-5" icon="solar:arrow-left-bold" />
                     </button>
                     <button
-                      onClick={scrollNext}
                       className={`absolute top-1/2 right-2 -translate-y-1/2 bg-white/80 dark:bg-black/50 rounded-full p-2 shadow-md z-10 ${
                         !canScrollNext ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       disabled={!canScrollNext}
+                      onClick={scrollNext}
                     >
-                      <Icon icon="solar:arrow-right-bold" className="w-5 h-5" />
+                      <Icon className="w-5 h-5" icon="solar:arrow-right-bold" />
                     </button>
                   </>
                 )}
@@ -303,43 +304,43 @@ export function StatsCard({
                   Quick Actions
                 </h3>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-1">
-                  <Link href="/dashboard/generate-image" className="w-full">
+                  <Link className="w-full" href="/dashboard/generate-image">
                     <Button
                       className="w-full justify-start gap-2 h-12"
                       color="primary"
                       variant="flat"
                     >
-                      <Icon icon="solar:magic-stick-bold" className="w-5 h-5" />
+                      <Icon className="w-5 h-5" icon="solar:magic-stick-bold" />
                       <span>Generate Image</span>
                     </Button>
                   </Link>
-                  <Link href="/dashboard/train-model" className="w-full">
+                  <Link className="w-full" href="/dashboard/train-model">
                     <Button
                       className="w-full justify-start gap-2 h-12"
                       color="secondary"
                       variant="flat"
                     >
-                      <Icon icon="solar:server-bold" className="w-5 h-5" />
+                      <Icon className="w-5 h-5" icon="solar:server-bold" />
                       <span>Train Model</span>
                     </Button>
                   </Link>
-                  <Link href="/dashboard/my-images" className="w-full">
+                  <Link className="w-full" href="/dashboard/my-images">
                     <Button
                       className="w-full justify-start gap-2 h-12"
                       color="success"
                       variant="flat"
                     >
-                      <Icon icon="solar:gallery-bold" className="w-5 h-5" />
+                      <Icon className="w-5 h-5" icon="solar:gallery-bold" />
                       <span>My Gallery</span>
                     </Button>
                   </Link>
-                  <Link href="/dashboard/my-models" className="w-full">
+                  <Link className="w-full" href="/dashboard/my-models">
                     <Button
                       className="w-full justify-start gap-2 h-12"
                       color="warning"
                       variant="flat"
                     >
-                      <Icon icon="solar:server-path-bold" className="w-5 h-5" />
+                      <Icon className="w-5 h-5" icon="solar:server-path-bold" />
                       <span>My Models</span>
                     </Button>
                   </Link>
@@ -359,8 +360,8 @@ export function StatsCard({
                       <div className="relative aspect-video rounded-lg overflow-hidden bg-default-100 shadow-sm">
                         <div className="w-full h-full flex flex-col gap-2 items-center justify-center bg-default-100">
                           <Icon
-                            icon="solar:server-bold"
                             className="w-10 h-10 text-default-300"
+                            icon="solar:server-bold"
                           />
                           <span>{latestModel.model_name}</span>
                         </div>
@@ -372,14 +373,14 @@ export function StatsCard({
                       </p>
                       <div className="flex justify-between mt-2">
                         <Link href={`/dashboard/my-models`}>
-                          <Button size="sm" color="primary" variant="flat">
+                          <Button color="primary" size="sm" variant="flat">
                             View Details
                           </Button>
                         </Link>
                         <Link
                           href={`/dashboard/generate-image?model_id=${latestModel.model_id}:${latestModel.version}`}
                         >
-                          <Button size="sm" color="secondary" variant="flat">
+                          <Button color="secondary" size="sm" variant="flat">
                             Generate
                           </Button>
                         </Link>
@@ -393,8 +394,8 @@ export function StatsCard({
                     </h3>
                     <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 text-center">
                       <Icon
-                        icon="solar:star-bold"
                         className="w-12 h-12 text-primary mx-auto mb-2"
+                        icon="solar:star-bold"
                       />
                       <h4 className="font-medium mb-1">Get More Credits</h4>
                       <p className="text-sm text-default-600 mb-3">
@@ -402,7 +403,7 @@ export function StatsCard({
                         training credits
                       </p>
                       <Link href="/dashboard/billing">
-                        <Button color="primary" className="w-full">
+                        <Button className="w-full" color="primary">
                           View Plans
                         </Button>
                       </Link>
