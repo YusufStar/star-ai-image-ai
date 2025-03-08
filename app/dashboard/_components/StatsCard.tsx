@@ -142,7 +142,7 @@ export function StatsCard({
                 style={{
                   width: `${Math.min(100, ((credits?.image_generation_count || 0) / (credits?.max_image_generation_count || 1)) * 100)}%`,
                 }}
-               />
+              />
             </div>
             <p className="text-xs text-default-500">
               Available credits for image generation
@@ -172,7 +172,7 @@ export function StatsCard({
                 style={{
                   width: `${Math.min(100, ((credits?.model_training_count || 0) / (credits?.max_model_training_count || 1)) * 100)}%`,
                 }}
-               />
+              />
             </div>
             <p className="text-xs text-default-500">
               Available credits for model training
@@ -389,25 +389,47 @@ export function StatsCard({
                   </>
                 ) : (
                   <>
-                    <h3 className="text-lg md:text-xl font-semibold mb-3">
-                      Upgrade Plan
-                    </h3>
-                    <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 text-center">
-                      <Icon
-                        className="w-12 h-12 text-primary mx-auto mb-2"
-                        icon="solar:star-bold"
-                      />
-                      <h4 className="font-medium mb-1">Get More Credits</h4>
-                      <p className="text-sm text-default-600 mb-3">
-                        Upgrade your plan to get more image generation and model
-                        training credits
-                      </p>
-                      <Link href="/dashboard/billing">
-                        <Button className="w-full" color="primary">
-                          View Plans
-                        </Button>
-                      </Link>
-                    </div>
+                    {credits?.max_model_training_count &&
+                    credits?.max_model_training_count > 0 ? (
+                      <>
+                        <h3 className="text-lg md:text-xl font-semibold mb-3">
+                          You have no models trained yet.
+                        </h3>
+
+                        <p className="text-sm text-default-500 mb-3">
+                          You can train a model by clicking the "Train Model"
+                          button above.
+                        </p>
+
+                        <Link href="/dashboard/train-model">
+                          <Button color="primary" size="sm" variant="flat">
+                            Train Model
+                          </Button>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="text-lg md:text-xl font-semibold mb-3">
+                          Upgrade Plan
+                        </h3>
+                        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 text-center">
+                          <Icon
+                            className="w-12 h-12 text-primary mx-auto mb-2"
+                            icon="solar:star-bold"
+                          />
+                          <h4 className="font-medium mb-1">Get More Credits</h4>
+                          <p className="text-sm text-default-600 mb-3">
+                            Upgrade your plan to get more image generation and
+                            model training credits
+                          </p>
+                          <Link href="/dashboard/billing">
+                            <Button className="w-full" color="primary">
+                              View Plans
+                            </Button>
+                          </Link>
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </CardBody>

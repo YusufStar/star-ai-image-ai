@@ -300,8 +300,7 @@ const updateUserCredits = async (uuid: string, metadata: any) => {
     user_id: uuid,
     image_generation_count: (metadata as any)?.image_generation_count || 0,
     model_training_count: (metadata as any)?.model_training_count || 0,
-    max_image_generation_count:
-      (metadata as any)?.image_generation_count || 0,
+    max_image_generation_count: (metadata as any)?.image_generation_count || 0,
     max_model_training_count: (metadata as any)?.model_training_count || 0,
   };
 
@@ -309,12 +308,10 @@ const updateUserCredits = async (uuid: string, metadata: any) => {
     .from("credits")
     .upsert(creditsData)
     .eq("user_id", uuid);
-    
+
   if (updateError) {
     throw new Error(`User credits update failed: ${updateError.message}`);
   }
-
-
 };
 
 export {
