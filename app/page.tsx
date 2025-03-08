@@ -12,9 +12,7 @@ const DashboardPage = async () => {
     getProducts(supabase),
   ]);
 
-  return (
-    <ClientWrapper products={products || []} />
-  );
+  return <ClientWrapper products={products || []} />;
 };
 
 export default DashboardPage;

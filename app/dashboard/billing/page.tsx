@@ -28,14 +28,12 @@ const BillingPage = async () => {
         title="Plans & Billing"
       />
 
-      <div className="grid gap-10">
-        <PlanSummary
-          credits={credits.data}
-          products={products || []}
-          subscription={subscription}
-          user={user}
-        />
-      </div>
+      <PlanSummary
+        credits={credits.data}
+        products={products || []}
+        subscription={subscription}
+        user={user}
+      />
     </div>
   );
 };

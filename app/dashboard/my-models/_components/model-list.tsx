@@ -112,15 +112,20 @@ const ModelList = ({ initialData }: ModelsListProps) => {
   const handleDeleteClick = (
     model: Database["public"]["Tables"]["models"]["Row"]
   ) => {
-    if (model.training_status === "succeeded") {
+    if (
+      model.training_status !== "succeeded" &&
+      model.training_status !== "failed" &&
+      model.training_status !== "canceled"
+    ) {
       addToast({
         title: "Model is still training, please wait for it to finish.",
         description: "You can delete the model later.",
         color: "danger",
       });
+    } else {
+      setSelectedModel(model);
+      onOpen();
     }
-    setSelectedModel(model);
-    onOpen();
   };
 
   const handleConfirmDelete = async () => {
@@ -258,7 +263,7 @@ const ModelList = ({ initialData }: ModelsListProps) => {
                     }
                     size="sm"
                     variant="light"
-                    onClick={() => handleDeleteClick(model)}
+                    onPress={() => handleDeleteClick(model)}
                   >
                     <Icon className="text-sm" icon="mdi:trash-outline" />
                   </Button>

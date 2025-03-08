@@ -1,0 +1,2 @@
+- [] video uretimi dusunulecek.
+- [] sarki uretimi dusunulecek.

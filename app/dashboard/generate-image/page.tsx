@@ -23,7 +23,7 @@ const GenerateImage = async ({
         title="Generate Image"
       />
 
-      <section className="w-full h-fit overflow-y-auto flex flex-col-reverse xl:flex-row gap-4">
+      <section className="w-full h-fit overflow-y-auto flex flex-col-reverse xl:flex-row gap-8 xl:gap-0">
         <div className="w-full">
           <ConfigurationsForm
             model_id={model_id}

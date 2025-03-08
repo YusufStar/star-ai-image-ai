@@ -55,7 +55,7 @@ export default function PlanSummary({
         initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="max-w-5xl overflow-hidden border border-default-200 shadow-lg">
+        <Card className="w-full overflow-hidden border border-default-200 shadow-lg">
           <CardHeader className="flex items-center gap-2 bg-gradient-to-r from-default-100 to-default-50 px-6 py-4">
             <Icon
               className="text-xl text-default-500"
@@ -267,7 +267,7 @@ export default function PlanSummary({
       initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="max-w-5xl overflow-hidden border border-default-200 shadow-lg">
+      <Card className="w-full overflow-hidden border border-default-200 shadow-lg">
         <CardHeader className="flex items-center justify-between bg-gradient-to-r from-default-100 to-default-50 px-6 py-4">
           <div className="flex items-center gap-2">
             <Icon
@@ -436,6 +436,107 @@ export default function PlanSummary({
                     color={modelTrainingPercentage > 80 ? "danger" : "primary"}
                     value={modelTrainingPercentage}
                   />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Music and Video Generation - Coming Soon */}
+          <Divider className="my-6" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="space-y-4"
+              initial={{ opacity: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Icon
+                  className="text-lg text-default-400"
+                  icon="solar:music-note-2-bold-duotone"
+                />
+                <h4 className="text-sm font-medium text-default-600">Music Generation</h4>
+                <Chip
+                  className="ml-auto"
+                  color="default"
+                  size="sm"
+                  variant="flat"
+                >
+                  Coming Soon
+                </Chip>
+              </div>
+
+              <div className="space-y-2 opacity-60">
+                <div className="flex-1 text-xs flex w-full justify-between pb-1">
+                  <span className="font-normal text-default-500">
+                    Credits used
+                  </span>
+                  <span className="font-medium">
+                    0 / {isPro ? 50 : isEnterprise ? 100 : 10}
+                  </span>
+                </div>
+
+                <div className="flex items-end">
+                  <Progress
+                    aria-label="Music generation credits"
+                    className="w-full h-2"
+                    color="default"
+                    value={0}
+                    isDisabled
+                  />
+                </div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <Icon className="text-xs text-default-400" icon="solar:info-circle-linear" />
+                  <span className="text-xs text-default-400">Feature will be available soon</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="space-y-4"
+              initial={{ opacity: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Icon
+                  className="text-lg text-default-400"
+                  icon="solar:videocamera-record-bold-duotone"
+                />
+                <h4 className="text-sm font-medium text-default-600">Video Generation</h4>
+                <Chip
+                  className="ml-auto"
+                  color="default"
+                  size="sm"
+                  variant="flat"
+                >
+                  Coming Soon
+                </Chip>
+              </div>
+
+              <div className="space-y-2 opacity-60">
+                <div className="flex-1 text-xs flex w-full justify-between pb-1">
+                  <span className="font-normal text-default-500">
+                    Credits used
+                  </span>
+                  <span className="font-medium">
+                    0 / {isPro ? 20 : isEnterprise ? 50 : 5}
+                  </span>
+                </div>
+
+                <div className="flex items-end">
+                  <Progress
+                    aria-label="Video generation credits"
+                    className="w-full h-2"
+                    color="default"
+                    value={0}
+                    isDisabled
+                  />
+                </div>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <Icon className="text-xs text-default-400" icon="solar:info-circle-linear" />
+                  <span className="text-xs text-default-400">Feature will be available soon</span>
                 </div>
               </div>
             </motion.div>

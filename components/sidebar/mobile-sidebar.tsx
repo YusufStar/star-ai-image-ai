@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { 
-  Drawer, 
-  DrawerContent, 
+import {
+  Drawer,
+  DrawerContent,
   DrawerBody,
-  Button, 
-  Avatar, 
-  Spacer, 
+  Button,
+  Avatar,
+  Spacer,
   ScrollShadow,
-  Skeleton
+  Skeleton,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
@@ -18,6 +18,8 @@ import { sectionItems } from "./sidebar-items";
 
 import { Logo } from "@/components/icons";
 import { logout } from "@/actions/auth-actions";
+import { useRouter, usePathname } from "next/navigation";
+import { Selection } from "@heroui/react";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -35,20 +37,65 @@ export default function MobileSidebar({
   onClose,
   activeKey,
   userData,
-  isLoadingUserData
+  isLoadingUserData,
 }: MobileSidebarProps) {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Close sidebar only when pathname changes (not on initial render or when sidebar is opened)
+  useEffect(() => {
+    // Only close if the pathname has changed and the sidebar is open
+    if (pathname !== prevPathname && isOpen) {
+      onClose();
+    }
+    
+    // Update the previous pathname
+    setPrevPathname(pathname);
+  }, [pathname, prevPathname, onClose, isOpen]);
+
+  const handleItemSelect = (keys: Selection) => {
+    // Convert Selection to string if it's a single key
+    if (keys === "all" || keys.size !== 1) return;
+
+    const key = Array.from(keys)[0] as string;
+
+    // Find the selected item to get its href
+    const findItemByKey = (items: any[]): any => {
+      for (const item of items) {
+        if (item.key === key) {
+          return item;
+        }
+        if (item.items) {
+          const found = findItemByKey(item.items);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const allItems = sectionItems.flatMap((section) => section.items || []);
+    const selectedItem = findItemByKey(allItems);
+
+    if (selectedItem && selectedItem.href) {
+      // Navigate to the href
+      router.push(selectedItem.href);
+      // Note: We don't need to manually close the sidebar here anymore
+      // as the pathname change will trigger the useEffect above
+    }
+  };
+
   return (
-    <Drawer 
-      hideCloseButton 
+    <Drawer
+      hideCloseButton
       classNames={{
         base: "m-0 h-full w-[85%] max-w-[300px] rounded-r-large rounded-l-none",
-        wrapper: "items-start justify-start"
+        wrapper: "items-start justify-start",
       }}
       isOpen={isOpen}
       placement="left"
@@ -63,26 +110,11 @@ export default function MobileSidebar({
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground">
                 <Logo className="text-background" />
               </div>
-              <span className="text-small font-bold uppercase">
-                Star AI
-              </span>
-              <Button 
-                isIconOnly 
-                className="ml-auto" 
-                size="sm" 
-                variant="light"
-                onPress={onClose}
-              >
-                <Icon
-                  className="text-default-500"
-                  icon="solar:close-circle-line-duotone"
-                  width={24}
-                />
-              </Button>
+              <span className="text-small font-bold uppercase">Star AI</span>
             </div>
-            
+
             <Spacer y={8} />
-            
+
             {/* User Profile */}
             <div className="flex items-center gap-3 px-3">
               {isLoadingUserData ? (
@@ -119,14 +151,19 @@ export default function MobileSidebar({
                 )}
               </div>
             </div>
-            
+
             {/* Navigation */}
             <ScrollShadow className="h-full max-h-full py-6">
-              <Sidebar isCompact={false} items={sectionItems} selectedKey={activeKey} />
+              <Sidebar
+                isCompact={false}
+                items={sectionItems}
+                selectedKey={activeKey}
+                onSelectionChange={handleItemSelect}
+              />
             </ScrollShadow>
-            
+
             <Spacer y={2} />
-            
+
             {/* Footer Buttons */}
             <div className="mt-auto flex flex-col">
               <Button
@@ -163,4 +200,4 @@ export default function MobileSidebar({
       </DrawerContent>
     </Drawer>
   );
-} 
+}

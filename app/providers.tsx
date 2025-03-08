@@ -6,7 +6,9 @@ import * as React from "react";
 import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ToastProvider } from "@heroui/react";
+import { Spinner, ToastProvider } from "@heroui/react";
+import { useState } from "react";
+import { useEffect } from "react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -23,11 +25,27 @@ declare module "@react-types/shared" {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps} >
-        {children}
+      <NextThemesProvider
+        {...themeProps}
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+      >
+        {mounted ? (
+          children
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <Spinner />
+          </div>
+        )}
         <ToastProvider />
       </NextThemesProvider>
     </HeroUIProvider>
